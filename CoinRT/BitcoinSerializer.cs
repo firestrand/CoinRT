@@ -21,7 +21,7 @@ using System.Text;
 using CoinSharp.Common;
 using CoinSharp.IO;
 using CoinSharp.Messages;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp
 {
@@ -39,7 +39,7 @@ namespace CoinSharp
     /// </remarks>
     public class BitcoinSerializer
     {
-        private static readonly ILog Log = Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Logger.GetLoggerForDeclaringType();
         private const int _commandLen = 12;
 
         private readonly NetworkParameters _params;

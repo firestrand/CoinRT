@@ -25,7 +25,7 @@ using System.Threading;
 using CoinSharp.Discovery;
 using CoinSharp.Store;
 using CoinSharp.Util;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp
 {
@@ -51,7 +51,7 @@ namespace CoinSharp
 
         private const int PeerGroupTimerInterval = 10000;
 
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
         /// <summary>
         /// Addresses to try to connect to, excluding active peers

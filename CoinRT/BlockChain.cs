@@ -20,7 +20,7 @@ using System.Diagnostics;
 using System.Linq;
 using CoinSharp.Store;
 using Org.BouncyCastle.Math;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp
 {
@@ -46,7 +46,7 @@ namespace CoinSharp
     /// </remarks>
     public class BlockChain
     {
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
         /// <summary>
         /// Keeps a map of block hashes to StoredBlocks.

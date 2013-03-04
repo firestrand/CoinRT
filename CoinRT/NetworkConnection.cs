@@ -19,7 +19,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using CoinSharp.Common;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp
 {
@@ -34,7 +34,7 @@ namespace CoinSharp
     /// </remarks>
     public class NetworkConnection : IDisposable
     {
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
         private Socket _socket;
         private Stream _out;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CoinSharp.Common;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp.IO
 {
@@ -20,7 +20,7 @@ namespace CoinSharp.IO
     /// </summary>
     public class MemoryPool
     {
-////        private static readonly ILog Log = Logger.GetLoggerForDeclaringType();
+////        private static readonly ILogger Log = Logger.GetLoggerForDeclaringType();
 
 ////        // For each transaction we may have seen:
 ////        //   - only its hash in an inv packet

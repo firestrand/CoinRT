@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp.Discovery
 {
@@ -28,7 +28,7 @@ namespace CoinSharp.Discovery
     /// </summary>
     public class IrcDiscovery : IPeerDiscovery
     {
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
         private readonly string _channel;
         private readonly int _port;

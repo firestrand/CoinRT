@@ -23,7 +23,7 @@ using CoinSharp.IO;
 using CoinSharp.Common;
 using CoinSharp.TransactionScript;
 using Org.BouncyCastle.Math;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp
 {
@@ -40,7 +40,7 @@ namespace CoinSharp
     [Serializable]
     public class Block : Message
     {
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
         /// <summary>
         /// How many bytes are required to represent a block header.

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using CoinSharp.IO;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp.Store
 {
@@ -29,7 +29,7 @@ namespace CoinSharp.Store
     /// </summary>
     public class DiskBlockStore : IBlockStore
     {
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
         private FileStream _stream;
         private readonly IDictionary<Sha256Hash, StoredBlock> _blockMap;

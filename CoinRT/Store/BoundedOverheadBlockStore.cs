@@ -19,7 +19,7 @@ using System.IO;
 using CoinSharp.Collections.Generic;
 using CoinSharp.IO;
 using Org.BouncyCastle.Math;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp.Store
 {
@@ -40,7 +40,7 @@ namespace CoinSharp.Store
     /// </remarks>
     public class BoundedOverheadBlockStore : IBlockStore
     {
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
         private const byte _fileFormatVersion = 1;
 
         // We keep some recently found blocks in the blockCache. It can help to optimize some cases where we are

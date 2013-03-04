@@ -20,7 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using CoinSharp.Messages;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp
 {
@@ -32,7 +32,7 @@ namespace CoinSharp
     /// </remarks>
     public class Peer
     {
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
         private NetworkConnection _conn;
         private readonly NetworkParameters _params;

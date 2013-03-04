@@ -21,7 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp
 {
@@ -37,7 +37,7 @@ namespace CoinSharp
     [Serializable]
     public class Wallet
     {
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
         // Algorithm for movement of transactions between pools. Outbound tx = us spending coins. Inbound tx = us
         // receiving coins. If a tx is both inbound and outbound (spend with change) it is considered outbound for the

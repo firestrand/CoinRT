@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using CoinSharp.IO;
 using CoinSharp.TransactionScript;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp
 {
@@ -30,7 +30,7 @@ namespace CoinSharp
     [Serializable]
     public class TransactionOutput : Message
     {
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
         // A transaction output has some value and a script used for authenticating that the redeemer is allowed to spend
         // this output.

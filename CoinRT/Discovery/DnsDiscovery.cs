@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp.Discovery
 {
@@ -32,7 +32,7 @@ namespace CoinSharp.Discovery
     /// </remarks>
     public class DnsDiscovery : IPeerDiscovery
     {
-        private static readonly ILog Log = Common.Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
         private readonly string[] _hostNames;
         private readonly NetworkParameters _netParams;

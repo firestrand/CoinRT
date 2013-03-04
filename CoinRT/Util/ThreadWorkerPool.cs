@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CoinSharp.Common;
-using log4net;
+using MetroLog;
 
 namespace CoinSharp.Util
 {
@@ -21,7 +21,7 @@ namespace CoinSharp.Util
     /// </summary>
     public class ThreadWorkerPool : IThreadWorkerPool
     {
-        private static readonly ILog Log = Logger.GetLoggerForDeclaringType();
+        private static readonly ILogger Log = Logger.GetLoggerForDeclaringType();
 
         private readonly SemaphoreSlim threadCount;
 
