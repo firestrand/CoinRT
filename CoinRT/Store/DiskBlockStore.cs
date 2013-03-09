@@ -95,7 +95,7 @@ namespace CoinRT.Store
         /// <exception cref="BlockStoreException"/>
         private void Load(FileInfo file)
         {
-            Log.InfoFormat("Reading block store from {0}", file);
+            Log.Info("Reading block store from {0}", file);
             using (var input = file.OpenRead())
             {
                 // Read a version byte.
@@ -114,7 +114,7 @@ namespace CoinRT.Store
                 if (input.Read(chainHeadHash) < chainHeadHash.Length)
                     throw new BlockStoreException("Truncated block store: cannot read chain head hash");
                 _chainHead = new Sha256Hash(chainHeadHash);
-                Log.InfoFormat("Read chain head from disk: {0}", _chainHead);
+                Log.Info("Read chain head from disk: {0}", _chainHead);
                 var now = Environment.TickCount;
                 // Rest of file is raw block headers.
                 var headerBytes = new byte[Block.HeaderSize];
@@ -167,7 +167,7 @@ namespace CoinRT.Store
                     throw new BlockStoreException(e);
                 }
                 var elapsed = Environment.TickCount - now;
-                Log.InfoFormat("Block chain read complete in {0}ms", elapsed);
+                Log.Info("Block chain read complete in {0}ms", elapsed);
             }
         }
 

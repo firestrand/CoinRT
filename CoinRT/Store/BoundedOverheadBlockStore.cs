@@ -209,7 +209,7 @@ namespace CoinRT.Store
         /// <exception cref="BlockStoreException"/>
         private void Load(FileInfo file)
         {
-            Log.InfoFormat("Reading block store from {0}", file);
+            Log.Info("Reading block store from {0}", file);
             if (_channel != null)
             {
                 _channel.Dispose();
@@ -233,7 +233,7 @@ namespace CoinRT.Store
                 if (_channel.Read(chainHeadHash) < chainHeadHash.Length)
                     throw new BlockStoreException("Truncated store: could not read chain head hash.");
                 _chainHead = new Sha256Hash(chainHeadHash);
-                Log.InfoFormat("Read chain head from disk: {0}", _chainHead);
+                Log.Info("Read chain head from disk: {0}", _chainHead);
                 _channel.Position = _channel.Length - Record.Size;
             }
             catch (IOException)

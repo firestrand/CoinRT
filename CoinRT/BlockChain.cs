@@ -105,7 +105,7 @@ namespace CoinRT
         {
             _blockStore = blockStore;
             _chainHead = blockStore.GetChainHead();
-            Log.InfoFormat("chain head is:{0}{1}", Environment.NewLine, _chainHead.Header);
+            Log.Info("chain head is:{0}{1}", Environment.NewLine, _chainHead.Header);
             _params = networkParams;
             _wallets = new List<Wallet>(wallets);
         }
@@ -152,7 +152,7 @@ namespace CoinRT
                 if (Environment.TickCount - _statsLastTime > 1000)
                 {
                     // More than a second passed since last stats logging.
-                    Log.InfoFormat("{0} blocks per second", _statsBlocksAdded);
+                    Log.Info("{0} blocks per second", _statsBlocksAdded);
                     _statsLastTime = Environment.TickCount;
                     _statsBlocksAdded = 0;
                 }
@@ -199,7 +199,7 @@ namespace CoinRT
                     // We can't find the previous block. Probably we are still in the process of downloading the chain and a
                     // block was solved whilst we were doing it. We put it to one side and try to connect it later when we
                     // have more blocks.
-                    Log.WarnFormat("Block does not connect: {0}", block.HashAsString);
+                    Log.Warn("Block does not connect: {0}", block.HashAsString);
                     _unconnectedBlocks.Add(block);
                     return false;
                 }
@@ -228,7 +228,7 @@ namespace CoinRT
             {
                 // This block connects to the best known block, it is a normal continuation of the system.
                 ChainHead = newStoredBlock;
-                Log.DebugFormat("Chain is now {0} blocks high", _chainHead.Height);
+                Log.Debug("Chain is now {0} blocks high", _chainHead.Height);
                 if (newTransactions != null)
                     SendTransactionsToWallet(newStoredBlock, NewBlockType.BestChain, newTransactions);
             }
@@ -247,7 +247,7 @@ namespace CoinRT
                 {
                     var splitPoint = FindSplit(newStoredBlock, _chainHead);
                     var splitPointHash = splitPoint != null ? splitPoint.Header.HashAsString : "?";
-                    Log.InfoFormat("Block forks the chain at {0}, but it did not cause a reorganize:{1}{2}",
+                    Log.Info("Block forks the chain at {0}, but it did not cause a reorganize:{1}{2}",
                                     splitPointHash, Environment.NewLine, newStoredBlock);
                 }
 
@@ -275,10 +275,10 @@ namespace CoinRT
             // Firstly, calculate the block at which the chain diverged. We only need to examine the
             // chain from beyond this block to find differences.
             var splitPoint = FindSplit(newChainHead, _chainHead);
-            Log.InfoFormat("Re-organize after split at height {0}", splitPoint.Height);
-            Log.InfoFormat("Old chain head: {0}", _chainHead.Header.HashAsString);
-            Log.InfoFormat("New chain head: {0}", newChainHead.Header.HashAsString);
-            Log.InfoFormat("Split at block: {0}", splitPoint.Header.HashAsString);
+            Log.Info("Re-organize after split at height {0}", splitPoint.Height);
+            Log.Info("Old chain head: {0}", _chainHead.Header.HashAsString);
+            Log.Info("New chain head: {0}", newChainHead.Header.HashAsString);
+            Log.Info("Split at block: {0}", splitPoint.Header.HashAsString);
             // Then build a list of all blocks in the old part of the chain and the new part.
             var oldBlocks = GetPartialChain(_chainHead, splitPoint);
             var newBlocks = GetPartialChain(newChainHead, splitPoint);
@@ -365,7 +365,7 @@ namespace CoinRT
                 {
                     // We don't want scripts we don't understand to break the block chain so just note that this tx was
                     // not scanned here and continue.
-                    Log.WarnFormat("Failed to parse a script: {0}", e);
+                    Log.Warn("Failed to parse a script: {0}", e);
                 }
             }
         }
@@ -401,7 +401,7 @@ namespace CoinRT
                 }
                 if (blocksConnectedThisRound > 0)
                 {
-                    Log.InfoFormat("Connected {0} floating blocks.", blocksConnectedThisRound);
+                    Log.Info("Connected {0} floating blocks.", blocksConnectedThisRound);
                 }
             } while (blocksConnectedThisRound > 0);
         }
@@ -440,7 +440,7 @@ namespace CoinRT
                 }
                 cursor = _blockStore.Get(cursor.Header.PrevBlockHash);
             }
-            Log.DebugFormat("Difficulty transition traversal took {0}ms", Environment.TickCount - now);
+            Log.Debug("Difficulty transition traversal took {0}ms", Environment.TickCount - now);
 
             var blockIntervalAgo = cursor.Header;
             var timespan = (int) (prev.TimeSeconds - blockIntervalAgo.TimeSeconds);
@@ -456,7 +456,7 @@ namespace CoinRT
 
             if (newDifficulty.CompareTo(_params.ProofOfWorkLimit) > 0)
             {
-                Log.DebugFormat("Difficulty hit proof of work limit: {0}", newDifficulty.ToString(16));
+                Log.Debug("Difficulty hit proof of work limit: {0}", newDifficulty.ToString(16));
                 newDifficulty = _params.ProofOfWorkLimit;
             }
 

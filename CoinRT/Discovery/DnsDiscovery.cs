@@ -100,7 +100,7 @@ namespace CoinRT.Discovery
                 catch (Exception e)
                 {
                     failedLookups++;
-                    Log.InfoFormat("DNS lookup for {0} failed.", hostName);
+                    Log.Info("DNS lookup for {0} failed.", hostName);
 
                     if (failedLookups == _hostNames.Length)
                     {

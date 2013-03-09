@@ -169,7 +169,7 @@ namespace CoinRT
                     else
                     {
                         // TODO: Handle the other messages we can receive.
-                        Log.WarnFormat("Received unhandled message: {0}", m);
+                        Log.Warn("Received unhandled message: {0}", m);
                     }
                 }
             }
@@ -208,17 +208,17 @@ namespace CoinRT
         {
             if (m.IsSignatureValid)
             {
-                Log.InfoFormat("Received alert from peer {0}: {1}", this, m.StatusBar);
+                Log.Info("Received alert from peer {0}: {1}", this, m.StatusBar);
             }
             else
             {
-                Log.WarnFormat("Received alert with invalid signature from peer {0}: {1}", this, m.StatusBar);
+                Log.Warn("Received alert with invalid signature from peer {0}: {1}", this, m.StatusBar);
             }
         }
 
         private void ProcessTransaction(Transaction tx)
         {
-            Log.DebugFormat("Received broadcast tx {0}", tx.HashAsString);
+            Log.Debug("Received broadcast tx {0}", tx.HashAsString);
         }
 
         /// <exception cref="IOException"/>
@@ -387,7 +387,7 @@ namespace CoinRT
             //
             // So this is a complicated process but it has the advantage that we can download a chain of enormous length
             // in a relatively stateless manner and with constant/bounded memory usage.
-            Log.InfoFormat("blockChainDownload({0})", toHash);
+            Log.Info("blockChainDownload({0})", toHash);
 
             // TODO: Block locators should be abstracted out rather than special cased here.
             var blockLocator = new LinkedList<Sha256Hash>();
