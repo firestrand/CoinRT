@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 
-namespace CoinSharp
+namespace CoinRT
 {
     internal sealed class GetDataFuture<T> : IAsyncResult, IDisposable
     {

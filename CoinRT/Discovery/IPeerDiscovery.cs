@@ -17,7 +17,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace CoinSharp.Discovery
+namespace CoinRT.Discovery
 {
     // TODO: Flesh out this interface a lot more.
 

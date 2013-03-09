@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using Org.BouncyCastle.Math;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     ///   A custom form of base58 is used to encode BitCoin addresses. Note that this is not the same base58 as used by Flickr, which you may see reference to around the internet.

@@ -19,13 +19,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using CoinSharp.IO;
-using CoinSharp.Common;
-using CoinSharp.TransactionScript;
+using CoinRT.IO;
+using CoinRT.Common;
+using CoinRT.TransactionScript;
 using Org.BouncyCastle.Math;
 using MetroLog;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// A block is the foundation of the BitCoin system. It records a set of <see cref="Transaction"/>s together with

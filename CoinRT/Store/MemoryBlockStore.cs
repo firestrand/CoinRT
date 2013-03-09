@@ -16,7 +16,7 @@
 
 using System.Collections.Generic;
 
-namespace CoinSharp.Store
+namespace CoinRT.Store
 {
     /// <summary>
     /// Keeps <see cref="StoredBlock"/>s in memory. Used primarily for unit testing.

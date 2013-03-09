@@ -18,10 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using CoinSharp.IO;
+using CoinRT.IO;
 using MetroLog;
 
-namespace CoinSharp.Store
+namespace CoinRT.Store
 {
     /// <summary>
     /// Stores the block chain to disk but still holds it in memory. This is intended for desktop apps and tests.

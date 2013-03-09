@@ -16,9 +16,9 @@
 
 using System;
 using System.Threading;
-using CoinSharp.Common;
+using CoinRT.Common;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// Listen to chain download events and print useful informational messages.

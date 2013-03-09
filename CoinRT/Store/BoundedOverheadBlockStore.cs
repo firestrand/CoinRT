@@ -16,12 +16,12 @@
 
 using System.Diagnostics;
 using System.IO;
-using CoinSharp.Collections.Generic;
-using CoinSharp.IO;
+using CoinRT.Collections.Generic;
+using CoinRT.IO;
 using Org.BouncyCastle.Math;
 using MetroLog;
 
-namespace CoinSharp.Store
+namespace CoinRT.Store
 {
     /// <summary>
     /// Stores the block chain to disk.

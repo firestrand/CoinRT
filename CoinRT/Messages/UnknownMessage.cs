@@ -16,7 +16,7 @@
 
 using System;
 
-namespace CoinSharp
+namespace CoinRT
 {
     [Serializable]
     public class UnknownMessage : Message

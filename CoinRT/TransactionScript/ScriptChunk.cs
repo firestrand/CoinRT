@@ -1,4 +1,4 @@
-namespace CoinSharp.TransactionScript
+namespace CoinRT.TransactionScript
 {
     internal class ScriptChunk
     {

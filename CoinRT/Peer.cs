@@ -19,10 +19,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using CoinSharp.Messages;
+using CoinRT.Messages;
 using MetroLog;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// A Peer handles the high level communication with a BitCoin node.

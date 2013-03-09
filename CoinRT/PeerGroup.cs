@@ -23,12 +23,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using CoinSharp.Discovery;
-using CoinSharp.Store;
-using CoinSharp.Util;
+using CoinRT.Discovery;
+using CoinRT.Store;
+using CoinRT.Util;
 using MetroLog;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// Maintain a number of connections to peers.

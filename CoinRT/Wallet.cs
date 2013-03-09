@@ -23,7 +23,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using MetroLog;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// A Wallet stores keys and a record of transactions that have not yet been spent. Thus, it is capable of

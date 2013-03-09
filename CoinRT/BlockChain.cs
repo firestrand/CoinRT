@@ -18,11 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using CoinSharp.Store;
+using CoinRT.Store;
 using Org.BouncyCastle.Math;
 using MetroLog;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// A BlockChain holds a series of <see cref="Block"/> objects, links them together, and knows how to verify that the

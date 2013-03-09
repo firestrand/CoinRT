@@ -22,7 +22,7 @@
 using System;
 using System.IO;
 
-namespace CoinSharp.IO
+namespace CoinRT.IO
 {
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.

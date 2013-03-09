@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CoinSharp.Common;
+using CoinRT.Common;
 using MetroLog;
 
-namespace CoinSharp.Util
+namespace CoinRT.Util
 {
     /// <summary>
     /// Uses worker threads from main thread pool, but has local thread limit.

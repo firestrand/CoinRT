@@ -17,9 +17,9 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using CoinSharp.IO;
+using CoinRT.IO;
 
-namespace CoinSharp
+namespace CoinRT
 {
     // TODO: Fold this class into the TransactionInput class. It's not necessary.
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace CoinSharp.Util
+namespace CoinRT.Util
 {
     /// <summary>
     /// Timer that executes callback only in 1 thread simultaniously.

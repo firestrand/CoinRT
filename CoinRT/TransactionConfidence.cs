@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Org.BouncyCastle.Math;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// <p>A TransactionConfidence object tracks data you can use to make a confidence decision about a transaction.

@@ -19,10 +19,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using CoinSharp.IO;
-using CoinSharp.TransactionScript;
+using CoinRT.IO;
+using CoinRT.TransactionScript;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// A transaction represents the movement of coins from some addresses to some other addresses. It can also represent

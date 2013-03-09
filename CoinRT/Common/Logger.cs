@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using MetroLog;
 
-namespace CoinSharp.Common
+namespace CoinRT.Common
 {
     public static class Logger
     {

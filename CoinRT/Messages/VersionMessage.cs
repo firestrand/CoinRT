@@ -18,10 +18,10 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
-using CoinSharp.IO;
-using CoinSharp.Common;
+using CoinRT.IO;
+using CoinRT.Common;
 
-namespace CoinSharp
+namespace CoinRT
 {
     [Serializable]
     public class VersionMessage : Message
@@ -85,7 +85,7 @@ namespace CoinSharp
             // is kind of tricky anyway, so we just put nonsense here for now.
             MyAddr = new PeerAddress(IPAddress.Loopback, networkParams.Port, 0);
             TheirAddr = new PeerAddress(IPAddress.Loopback, networkParams.Port, 0);
-            SubVer = "BitCoinSharp 0.3-SNAPSHOT";
+            SubVer = "BitCoinRT 0.3-SNAPSHOT";
             BestHeight = newBestHeight;
         }
 

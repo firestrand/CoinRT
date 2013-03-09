@@ -21,11 +21,11 @@ using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using CoinSharp.IO;
+using CoinRT.IO;
 using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Math;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// A collection of various utility methods that are helpful for working with the BitCoin protocol.

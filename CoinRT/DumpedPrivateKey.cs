@@ -17,7 +17,7 @@
 using System;
 using Org.BouncyCastle.Math;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// Parses and generates private keys in the form used by the BitCoin "dumpprivkey" command. This is the private key

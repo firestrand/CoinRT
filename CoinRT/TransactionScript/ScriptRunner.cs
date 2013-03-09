@@ -6,7 +6,7 @@ using System.Text;
 using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Math;
 
-namespace CoinSharp.TransactionScript
+namespace CoinRT.TransactionScript
 {
     public class ScriptRunner
     {

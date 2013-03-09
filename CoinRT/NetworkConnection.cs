@@ -18,10 +18,10 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using CoinSharp.Common;
+using CoinRT.Common;
 using MetroLog;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// A NetworkConnection handles talking to a remote BitCoin peer at a low level. It understands how to read and write
@@ -106,7 +106,7 @@ namespace CoinSharp
                             versionMsg.LocalServices,
                             UnixTime.FromUnixTime(versionMsg.Time),
                             versionMsg.BestHeight);
-            // BitCoinSharp is a client mode implementation. That means there's not much point in us talking to other client
+            // BitCoinRT is a client mode implementation. That means there's not much point in us talking to other client
             // mode nodes because we can't download the data from them we need to find/verify transactions.
             if (!versionMsg.HasBlockChain())
             {

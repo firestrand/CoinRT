@@ -18,10 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using CoinSharp.IO;
-using CoinSharp.TransactionScript;
+using CoinRT.IO;
+using CoinRT.TransactionScript;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// A transfer of coins from one address to another creates a transaction in which the outputs

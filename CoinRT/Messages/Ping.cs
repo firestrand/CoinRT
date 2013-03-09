@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace CoinSharp
+namespace CoinRT
 {
     public class Ping : Message
     {

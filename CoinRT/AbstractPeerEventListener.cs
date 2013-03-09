@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// Convenience abstract class for implementing a PeerEventListener.

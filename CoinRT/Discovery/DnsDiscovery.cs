@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Net;
 using MetroLog;
 
-namespace CoinSharp.Discovery
+namespace CoinRT.Discovery
 {
     /// <summary>
     /// Supports peer discovery through DNS.

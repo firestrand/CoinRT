@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// The verack message, sent by a client accepting the version message they received from their peer.

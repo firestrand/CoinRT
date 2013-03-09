@@ -15,10 +15,10 @@
  */
 
 using System;
-using CoinSharp.Store;
+using CoinRT.Store;
 using Org.BouncyCastle.Math;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// Wraps a <see cref="Block"/> object with extra data that can be derived from the block chain but is slow or inconvenient to

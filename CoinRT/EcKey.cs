@@ -26,7 +26,7 @@ using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// Represents an elliptic curve keypair that we own and can use for signing transactions. Currently,

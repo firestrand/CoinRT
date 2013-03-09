@@ -1,4 +1,4 @@
-namespace CoinSharp.TransactionScript
+namespace CoinRT.TransactionScript
 {
     // ReSharper disable InconsistentNaming
     public enum OpCode : byte

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace CoinSharp.IO
+namespace CoinRT.IO
 {
     internal static class StreamExtensions
     {

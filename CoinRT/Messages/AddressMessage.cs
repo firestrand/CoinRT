@@ -18,9 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using CoinSharp.IO;
+using CoinRT.IO;
 
-namespace CoinSharp
+namespace CoinRT
 {
     [Serializable]
     public class AddressMessage : Message

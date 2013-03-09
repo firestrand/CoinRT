@@ -17,11 +17,11 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using CoinSharp.IO;
-using CoinSharp.TransactionScript;
+using CoinRT.IO;
+using CoinRT.TransactionScript;
 using MetroLog;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// A TransactionOutput message contains a scriptPubKey that controls who is able to spend its value. It is a sub-part

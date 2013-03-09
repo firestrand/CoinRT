@@ -17,12 +17,12 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using CoinSharp.IO;
-using CoinSharp.TransactionScript;
+using CoinRT.IO;
+using CoinRT.TransactionScript;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Utilities.Encoders;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// NetworkParameters contains the data needed for working with an instantiation of a BitCoin chain.

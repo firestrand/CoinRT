@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CoinSharp.Common;
+using CoinRT.Common;
 using MetroLog;
 
-namespace CoinSharp.IO
+namespace CoinRT.IO
 {
     /// <summary>
     /// <p>Tracks transactions that are being announced across the network. Typically one is created for you by a

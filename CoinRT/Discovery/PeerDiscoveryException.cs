@@ -16,7 +16,7 @@
 
 using System;
 
-namespace CoinSharp.Discovery
+namespace CoinRT.Discovery
 {
     [Serializable]
     public class PeerDiscoveryException : Exception

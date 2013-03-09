@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace CoinSharp.TransactionScript
+namespace CoinRT.TransactionScript
 {
     /// <summary>
     /// <p>Instructions for redeeming a payment.</p>

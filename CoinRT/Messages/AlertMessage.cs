@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoinSharp.Common;
+using CoinRT.Common;
 
-namespace CoinSharp.Messages
+namespace CoinRT.Messages
 {
     /// <summary>
     /// Alerts are signed messages that are broadcast on the peer-to-peer network if they match a hard-coded signing key.

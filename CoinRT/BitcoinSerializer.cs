@@ -18,12 +18,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using CoinSharp.Common;
-using CoinSharp.IO;
-using CoinSharp.Messages;
+using CoinRT.Common;
+using CoinRT.IO;
+using CoinRT.Messages;
 using MetroLog;
 
-namespace CoinSharp
+namespace CoinRT
 {
     /// <summary>
     /// Methods to serialize and de-serialize messages to the BitCoin network format as defined in the BitCoin protocol

@@ -21,7 +21,7 @@ using System.Net;
 using System.Net.Sockets;
 using MetroLog;
 
-namespace CoinSharp.Discovery
+namespace CoinRT.Discovery
 {
     /// <summary>
     /// IrcDiscovery provides a way to find network peers by joining a pre-agreed rendevouz point on the LFnet IRC network.
@@ -84,7 +84,7 @@ namespace CoinSharp.Discovery
                     using (var reader = new StreamReader(new NetworkStream(connection, FileAccess.Read)))
                     {
                         // Generate a random nick for the connection. This is chosen to be clearly identifiable as coming from
-                        // BitCoinSharp but not match the standard nick format, so full peers don't try and connect to us.
+                        // BitCoinRT but not match the standard nick format, so full peers don't try and connect to us.
                         var nickRnd = string.Format("bcs{0}", new Random().Next(int.MaxValue));
                         var command = "NICK " + nickRnd;
                         LogAndSend(writer, command);
