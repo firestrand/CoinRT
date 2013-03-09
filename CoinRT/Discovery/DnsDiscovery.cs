@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.Net;
 using MetroLog;
 using System.Threading.Tasks;
+using Windows.Networking.Sockets;
+using Windows.Networking;
 
 namespace CoinRT.Discovery
 {
@@ -67,7 +69,7 @@ namespace CoinRT.Discovery
         }
 
         /// <exception cref="PeerDiscoveryException"/>
-        public Task<IEnumerable<EndPoint>> GetPeers()
+        public async Task<IEnumerable<EndPoint>> GetPeers()
         {
             ICollection<EndPoint> addresses = new HashSet<EndPoint>();
 
@@ -82,13 +84,14 @@ namespace CoinRT.Discovery
             {
                 try
                 {
-                    var hostAddresses = Dns.GetHostEntry(hostName).AddressList;
+                    var hostAddresses = await DatagramSocket.GetEndpointPairsAsync(new HostName(hostName), "0");
 
                     foreach (var inetAddress in hostAddresses)
                     {
                         // DNS isn't going to provide us with the port.
                         // Grab the port from the specified NetworkParameters.
-                        var socketAddress = new IPEndPoint(inetAddress, _netParams.Port);
+                        
+                        var socketAddress = new DnsEndPoint(inetAddress.RemoteHostName.RawName, _netParams.Port);
 
                         // Only add the new address if it's not already in the combined list.
                         if (!addresses.Contains(socketAddress))
@@ -110,6 +113,7 @@ namespace CoinRT.Discovery
                     }
                 }
             }
+
             return addresses;
         }
 
