@@ -20,6 +20,7 @@ using System.Net;
 using CoinRT.IO;
 using CoinRT.Common;
 using Org.BouncyCastle.Math;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
@@ -27,7 +28,7 @@ namespace CoinRT
     /// A PeerAddress holds an IP address and port number representing the network location of
     /// a peer in the BitCoin P2P network. It exists primarily for serialization purposes.
     /// </summary>
-    [Serializable]
+    [DataContract]
     public class PeerAddress : Message
     {
         internal IPAddress Addr { get; private set; }

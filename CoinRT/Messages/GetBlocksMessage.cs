@@ -19,10 +19,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CoinRT.IO;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
-    [Serializable]
+    [DataContract]
     public class GetBlocksMessage : Message
     {
         private readonly IList<Sha256Hash> _locator;

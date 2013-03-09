@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using CoinRT.IO;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
@@ -26,7 +27,7 @@ namespace CoinRT
     /// <summary>
     /// This message is a reference or pointer to an output of a different transaction.
     /// </summary>
-    [Serializable]
+    [DataContract]
     public class TransactionOutPoint : Message
     {
         /// <summary>

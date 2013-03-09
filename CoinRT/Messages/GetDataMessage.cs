@@ -15,10 +15,11 @@
  */
 
 using System;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
-    [Serializable]
+    [DataContract]
     public class GetDataMessage : ListMessage
     {
         /// <exception cref="ProtocolException"/>

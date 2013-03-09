@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Linq;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Utilities.Encoders;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
@@ -26,7 +27,7 @@ namespace CoinRT
     /// A Sha256Hash just wraps a byte[] so that equals and hashcode work correctly, allowing it to be used as keys in a
     /// map. It also checks that the length is correct and provides a bit more type safety.
     /// </summary>
-    [Serializable]
+    [DataContract]
     public class Sha256Hash
     {
         private readonly byte[] _bytes;

@@ -20,6 +20,7 @@ using System.IO;
 using CoinRT.IO;
 using CoinRT.TransactionScript;
 using MetroLog;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
@@ -27,7 +28,7 @@ namespace CoinRT
     /// A TransactionOutput message contains a scriptPubKey that controls who is able to spend its value. It is a sub-part
     /// of the Transaction message.
     /// </summary>
-    [Serializable]
+    [DataContract]
     public class TransactionOutput : Message
     {
         private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
@@ -38,7 +39,7 @@ namespace CoinRT
         private byte[] _scriptBytes;
 
         // The script bytes are parsed and turned into a Script on demand.
-        [NonSerialized] private Script _scriptPubKey;
+        [IgnoreDataMember] private Script _scriptPubKey;
 
         // These fields are Java serialized but not BitCoin serialized. They are used for tracking purposes in our wallet
         // only. If set to true, this output is counted towards our balance. If false and spentBy is null the tx output
@@ -169,7 +170,7 @@ namespace CoinRT
             }
             catch (ScriptException e)
             {
-                Log.ErrorFormat("Could not parse tx output script: {0}", e);
+                Log.Error("Could not parse tx output script: {0}", e);
                 return false;
             }
         }

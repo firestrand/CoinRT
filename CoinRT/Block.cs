@@ -24,6 +24,7 @@ using CoinRT.Common;
 using CoinRT.TransactionScript;
 using Org.BouncyCastle.Math;
 using MetroLog;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
@@ -37,7 +38,7 @@ namespace CoinRT
     /// or request one specifically using <see cref="Peer.BeginGetBlock"/>, or grab one from a downloaded
     /// <see cref="BlockChain"/>.
     /// </remarks>
-    [Serializable]
+    [DataContract]
     public class Block : Message
     {
         private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
@@ -73,7 +74,7 @@ namespace CoinRT
         /// <summary>
         /// Stores the hash of the block. If null, getHash() will recalculate it.
         /// </summary>
-        [NonSerialized] private Sha256Hash _hash;
+        [IgnoreDataMember] private Sha256Hash _hash;
 
         /// <summary>
         /// Special case constructor, used for the genesis node, cloneAsHeader and unit tests.

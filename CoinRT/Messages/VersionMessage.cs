@@ -20,10 +20,11 @@ using System.Net;
 using System.Text;
 using CoinRT.IO;
 using CoinRT.Common;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
-    [Serializable]
+    [DataContract]
     public class VersionMessage : Message
     {
         /// <summary>

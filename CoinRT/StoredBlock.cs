@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using System;
 using CoinRT.Store;
 using Org.BouncyCastle.Math;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
@@ -30,7 +30,7 @@ namespace CoinRT
     /// <remarks>
     /// StoredBlocks are put inside a <see cref="IBlockStore"/> which saves them to memory or disk.
     /// </remarks>
-    [Serializable]
+    [DataContract]
     public class StoredBlock
     {
         private readonly Block _header;

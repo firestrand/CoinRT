@@ -16,6 +16,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace CoinRT
@@ -28,15 +29,15 @@ namespace CoinRT
     /// <remarks>
     /// This class is not useful for library users. If you want to talk to the network see the <see cref="Peer"/> class.
     /// </remarks>
-    [Serializable]
+    [DataContract]
     public abstract class Message
     {
         public const uint MaxSize = 0x2000000;
 
-        [NonSerialized] private int _offset;
-        [NonSerialized] private int _cursor;
-        [NonSerialized] private byte[] _bytes;
-        [NonSerialized] private uint _protocolVersion;
+        [IgnoreDataMember] private int _offset;
+        [IgnoreDataMember] private int _cursor;
+        [IgnoreDataMember] private byte[] _bytes;
+        [IgnoreDataMember] private uint _protocolVersion;
 
         // The offset is how many bytes into the provided byte array this message starts at.
         protected int Offset

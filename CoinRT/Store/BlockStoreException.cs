@@ -24,7 +24,6 @@ namespace CoinRT.Store
     /// <remarks>
     /// Examples: out of disk space.
     /// </remarks>
-    [Serializable]
     public class BlockStoreException : Exception
     {
         public BlockStoreException()

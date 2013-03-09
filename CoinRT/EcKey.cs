@@ -25,6 +25,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
@@ -33,7 +34,7 @@ namespace CoinRT
     /// Bouncy Castle is used. In future this may become an interface with multiple implementations using different crypto
     /// libraries. The class also provides a static method that can verify a signature with just the public key.
     /// </summary>
-    [Serializable]
+    [DataContract]
     public class EcKey
     {
         private static readonly ECDomainParameters _ecParams;
@@ -51,7 +52,7 @@ namespace CoinRT
         private readonly BigInteger _priv;
         private readonly byte[] _pub;
 
-        [NonSerialized] private byte[] _pubKeyHash;
+        [IgnoreDataMember] private byte[] _pubKeyHash;
 
         /// <summary>
         /// Generates an entirely new keypair.

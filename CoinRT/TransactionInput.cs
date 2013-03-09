@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using CoinRT.IO;
 using CoinRT.TransactionScript;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
@@ -29,7 +30,7 @@ namespace CoinRT
     /// transaction as being a module which is wired up to others, the inputs of one have to be wired
     /// to the outputs of another. The exceptions are coinbase transactions, which create new coins.
     /// </summary>
-    [Serializable]
+    [DataContract]
     public class TransactionInput : Message
     {
         public static readonly byte[] EmptyArray = new byte[0];
@@ -46,7 +47,7 @@ namespace CoinRT
         internal byte[] ScriptBytes { get; set; }
         // The Script object obtained from parsing scriptBytes. Only filled in on demand and if the transaction is not
         // coinbase.
-        [NonSerialized] private Script _scriptSig;
+        [IgnoreDataMember] private Script _scriptSig;
         // A pointer to the transaction that owns this input.
         internal Transaction ParentTransaction { get; private set; }
 

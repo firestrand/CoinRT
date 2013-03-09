@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
+using CoinRT.IO;
+using CoinRT.TransactionScript;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Text;
-using CoinRT.IO;
-using CoinRT.TransactionScript;
 
 namespace CoinRT
 {
@@ -34,7 +35,7 @@ namespace CoinRT
     /// serialization which is used for the wallet. This allows us to easily add extra fields used for our own accounting
     /// or UI purposes.
     /// </remarks>
-    [Serializable]
+    [DataContract]
     public class Transaction : Message
     {
         // These are serialized in both BitCoin and java serialization.
@@ -44,7 +45,7 @@ namespace CoinRT
         private uint _lockTime;
 
         // This is an in memory helper only.
-        [NonSerialized] private Sha256Hash _hash;
+        [IgnoreDataMember] private Sha256Hash _hash;
 
         internal Transaction(NetworkParameters networkParams)
             : base(networkParams)

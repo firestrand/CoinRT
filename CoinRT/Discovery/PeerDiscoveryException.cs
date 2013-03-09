@@ -18,7 +18,6 @@ using System;
 
 namespace CoinRT.Discovery
 {
-    [Serializable]
     public class PeerDiscoveryException : Exception
     {
         public PeerDiscoveryException()

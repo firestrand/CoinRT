@@ -18,7 +18,6 @@ using System;
 
 namespace CoinRT
 {
-    [Serializable]
     public class ScriptException : Exception
     {
         public ScriptException()

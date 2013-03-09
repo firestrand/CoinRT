@@ -19,10 +19,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CoinRT.IO;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
-    [Serializable]
+    [DataContract]
     public class AddressMessage : Message
     {
         private const ulong MaxAddresses = 1024;

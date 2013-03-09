@@ -21,6 +21,7 @@ using CoinRT.IO;
 using CoinRT.TransactionScript;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Utilities.Encoders;
+using System.Runtime.Serialization;
 
 namespace CoinRT
 {
@@ -31,7 +32,7 @@ namespace CoinRT
     /// Currently there are only two, the production chain and the test chain. But in future as BitCoin
     /// evolves there may be more. You can create your own as long as they don't conflict.
     /// </remarks>
-    [Serializable]
+    [DataContract]
     public class NetworkParameters
     {
         /// <summary>

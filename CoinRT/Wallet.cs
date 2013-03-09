@@ -19,9 +19,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using MetroLog;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace CoinRT
 {
@@ -34,7 +35,7 @@ namespace CoinRT
     /// use the built in Java serialization to avoid the need to pull in a potentially large (code-size) third party
     /// serialization library.<p/>
     /// </remarks>
-    [Serializable]
+    [DataContract]
     public class Wallet
     {
         private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
@@ -173,8 +174,8 @@ namespace CoinRT
         {
             lock (this)
             {
-                var oos = new BinaryFormatter();
-                oos.Serialize(f, this);
+                var oos = new DataContractJsonSerializer(typeof(Wallet));
+                oos.WriteObject(f, this);
             }
         }
 
@@ -193,8 +194,8 @@ namespace CoinRT
         /// <exception cref="IOException"/>
         public static Wallet LoadFromFileStream(FileStream f)
         {
-            var ois = new BinaryFormatter();
-            return (Wallet) ois.Deserialize(f);
+            var ois = new DataContractJsonSerializer(typeof(Wallet));
+            return (Wallet) ois.ReadObject(f);
         }
 
         /// <summary>
@@ -244,7 +245,7 @@ namespace CoinRT
 
                 if (!reorg)
                 {
-                    Log.InfoFormat("Received tx{0} for {1} BTC: {2}", sideChain ? " on a side chain" : "",
+                    Log.Info("Received tx{0} for {1} BTC: {2}", sideChain ? " on a side chain" : "",
                                     Utils.BitcoinValueToFriendlystring(valueDifference), tx.HashAsString);
                 }
 
@@ -315,7 +316,7 @@ namespace CoinRT
                     }
                 }
 
-                Log.InfoFormat("Balance is now: {0}", Utils.BitcoinValueToFriendlystring(GetBalance()));
+                Log.Info("Balance is now: {0}", Utils.BitcoinValueToFriendlystring(GetBalance()));
 
                 // Inform anyone interested that we have new coins. Note: we may be re-entered by the event listener,
                 // so we must not make assumptions about our state after this loop returns! For example,
@@ -397,7 +398,7 @@ namespace CoinRT
                     Debug.Assert(connected != null);
                     if (Pending.Remove(connected.Hash))
                     {
-                        Log.InfoFormat("Saw double spend from chain override pending tx {0}", connected.HashAsString);
+                        Log.Info("Saw double spend from chain override pending tx {0}", connected.HashAsString);
                         Log.Info("  <-pending ->dead");
                         _dead[connected.Hash] = connected;
                         // Now forcibly change the connection.
@@ -484,7 +485,7 @@ namespace CoinRT
             lock (this)
             {
                 Debug.Assert(!Pending.ContainsKey(tx.Hash), "confirmSend called on the same transaction twice");
-                Log.InfoFormat("confirmSend of {0}", tx.HashAsString);
+                Log.Info("confirmSend of {0}", tx.HashAsString);
                 // Mark the outputs of the used transactions as spent, so we don't try and spend it again.
                 foreach (var input in tx.Inputs)
                 {
@@ -669,7 +670,7 @@ namespace CoinRT
 
                 // Now sign the inputs, thus proving that we are entitled to redeem the connected outputs.
                 sendTx.SignInputs(Transaction.SigHash.All, this);
-                Log.InfoFormat("  created {0}", sendTx.HashAsString);
+                Log.Info("  created {0}", sendTx.HashAsString);
                 return sendTx;
             }
         }
@@ -892,9 +893,9 @@ namespace CoinRT
                 // receive() has been called on the block that is triggering the re-org before this is called.
 
                 Log.Info("  Old part of chain (top to bottom):");
-                foreach (var b in oldBlocks) Log.InfoFormat("    {0}", b.Header.HashAsString);
-                Log.InfoFormat("  New part of chain (top to bottom):");
-                foreach (var b in newBlocks) Log.InfoFormat("    {0}", b.Header.HashAsString);
+                foreach (var b in oldBlocks) Log.Info("    {0}", b.Header.HashAsString);
+                Log.Info("  New part of chain (top to bottom):");
+                foreach (var b in newBlocks) Log.Info("    {0}", b.Header.HashAsString);
 
                 // Transactions that appear in the old chain segment.
                 IDictionary<Sha256Hash, Transaction> oldChainTransactions = new Dictionary<Sha256Hash, Transaction>();
@@ -962,9 +963,9 @@ namespace CoinRT
                 // unless the user has an enormous wallet. As an optimization fully spent transactions buried deeper than
                 // 1000 blocks could be put into yet another bucket which we never touch and assume re-orgs cannot affect.
 
-                foreach (var tx in onlyOldChainTransactions.Values) Log.InfoFormat("  Only Old: {0}", tx.HashAsString);
-                foreach (var tx in oldChainTransactions.Values) Log.InfoFormat("  Old: {0}", tx.HashAsString);
-                foreach (var tx in newChainTransactions.Values) Log.InfoFormat("  New: {0}", tx.HashAsString);
+                foreach (var tx in onlyOldChainTransactions.Values) Log.Info("  Only Old: {0}", tx.HashAsString);
+                foreach (var tx in oldChainTransactions.Values) Log.Info("  Old: {0}", tx.HashAsString);
+                foreach (var tx in newChainTransactions.Values) Log.Info("  New: {0}", tx.HashAsString);
 
                 // Break all the existing connections.
                 foreach (var tx in all.Values)
@@ -990,12 +991,12 @@ namespace CoinRT
                     }
                     if (unspentOutputs > 0)
                     {
-                        Log.InfoFormat("  TX {0}: ->unspent", tx.HashAsString);
+                        Log.Info("  TX {0}: ->unspent", tx.HashAsString);
                         Unspent[tx.Hash] = tx;
                     }
                     else
                     {
-                        Log.InfoFormat("  TX {0}: ->spent", tx.HashAsString);
+                        Log.Info("  TX {0}: ->spent", tx.HashAsString);
                         Spent[tx.Hash] = tx;
                     }
                 }
@@ -1004,14 +1005,14 @@ namespace CoinRT
                 //   - Connect the newly active transactions.
                 foreach (var b in newBlocks.Reverse()) // Need bottom-to-top but we get top-to-bottom.
                 {
-                    Log.InfoFormat("Replaying block {0}", b.Header.HashAsString);
+                    Log.Info("Replaying block {0}", b.Header.HashAsString);
                     ICollection<Transaction> txns = new HashSet<Transaction>();
                     foreach (var tx in newChainTransactions.Values)
                     {
                         if (tx.AppearsIn.Contains(b))
                         {
                             txns.Add(tx);
-                            Log.InfoFormat("  containing tx {0}", tx.HashAsString);
+                            Log.Info("  containing tx {0}", tx.HashAsString);
                         }
                     }
                     foreach (var t in txns)
@@ -1056,7 +1057,7 @@ namespace CoinRT
                     ReprocessTxAfterReorg(pool, tx);
                 }
 
-                Log.InfoFormat("post-reorg balance is {0}", Utils.BitcoinValueToFriendlystring(GetBalance()));
+                Log.Info("post-reorg balance is {0}", Utils.BitcoinValueToFriendlystring(GetBalance()));
 
                 // Inform event listeners that a re-org took place.
                 if (Reorganized != null)
@@ -1073,7 +1074,7 @@ namespace CoinRT
 
         private void ReprocessTxAfterReorg(IDictionary<Sha256Hash, Transaction> pool, Transaction tx)
         {
-            Log.InfoFormat("  TX {0}", tx.HashAsString);
+            Log.Info("  TX {0}", tx.HashAsString);
             var numInputs = tx.Inputs.Count;
             var noSuchTx = 0;
             var success = 0;
