@@ -222,18 +222,18 @@ namespace CoinRT
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("Unhandled exception in PeerGroupTimer", ex);
+                Log.Error("Unhandled exception in PeerGroupTimer", ex);
             }
         }
 
-        private void DiscoverPeers()
+        private async void DiscoverPeers()
         {
             foreach (var peerDiscovery in _peerDiscoverers)
             {
                 IEnumerable<EndPoint> addresses;
                 try
                 {
-                    addresses = peerDiscovery.GetPeers();
+                    addresses = await peerDiscovery.GetPeers();
                 }
                 catch (PeerDiscoveryException e)
                 {
