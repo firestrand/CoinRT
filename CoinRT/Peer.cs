@@ -101,7 +101,8 @@ namespace CoinRT
             {
                 try
                 {
-                    _conn = new NetworkConnection(_address, _params, _bestHeight, 60000);
+                    _conn = new NetworkConnection(_params);
+                    _conn.Connect(_address, _bestHeight, 60000);
                 }
                 catch (IOException ex)
                 {

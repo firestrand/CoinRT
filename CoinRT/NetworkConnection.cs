@@ -148,7 +148,7 @@ namespace CoinRT
 
         public override string ToString()
         {
-            return "[" + remoteIp + "]:" + networkParams.Port + " (" + (socket.Connected ? "connected" : "disconnected") + ")";
+            return "[" + remoteIp + "]:" + networkParams.Port;
         }
 
         /// <summary>
