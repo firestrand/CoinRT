@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using MetroLog;
+using System.Threading.Tasks;
 
 namespace CoinRT.Discovery
 {
@@ -66,7 +67,7 @@ namespace CoinRT.Discovery
         }
 
         /// <exception cref="PeerDiscoveryException"/>
-        public IEnumerable<EndPoint> GetPeers()
+        public Task<IEnumerable<EndPoint>> GetPeers()
         {
             ICollection<EndPoint> addresses = new HashSet<EndPoint>();
 

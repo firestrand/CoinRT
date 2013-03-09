@@ -16,10 +16,11 @@
 
 using System;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
+using Windows.Networking;
+using Windows.Networking.Sockets;
 using CoinRT.Common;
 using MetroLog;
+using System.Net;
 
 namespace CoinRT
 {
@@ -36,18 +37,20 @@ namespace CoinRT
     {
         private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
-        private Socket _socket;
-        private Stream _out;
-        private Stream _in;
+        private StreamSocket socket;
+        private Stream output;
+        private Stream input;
         // The IP address to which we are connecting.
-        private readonly IPAddress remoteIp;
-        private readonly NetworkParameters _params;
-        private readonly VersionMessage versionMessage;
+        private IPAddress remoteIp;
+        private readonly NetworkParameters networkParams;
+        private VersionMessage versionMessage;
 
         private readonly BitcoinSerializer serializer;
 
-        public NetworkConnection()
+        public NetworkConnection(NetworkParameters networkParams)
         {
+            this.networkParams = networkParams;
+            this.serializer = new BitcoinSerializer(networkParams, usesChecksumming: true);
         }
 
         /// <summary>
@@ -60,23 +63,22 @@ namespace CoinRT
         /// <param name="connectTimeout">Timeout in milliseconds when initially connecting to peer</param>
         /// <exception cref="IOException">If there is a network related failure.</exception>
         /// <exception cref="ProtocolException">If the version negotiation failed.</exception>
-        public NetworkConnection(PeerAddress peerAddress, NetworkParameters networkParams, uint bestHeight, int connectTimeout)
+        public async void Connect(PeerAddress peerAddress, uint bestHeight, int connectTimeout)
         {
-            _params = networkParams;
-            remoteIp = peerAddress.Addr;
+            
+            this.remoteIp = peerAddress.Addr;
 
-            var port = (peerAddress.Port > 0) ? peerAddress.Port : networkParams.Port;
+            var port = (peerAddress.Port > 0) ? peerAddress.Port : this.networkParams.Port;
 
-            var address = new IPEndPoint(remoteIp, port);
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _socket.Connect(address);
-            _socket.SendTimeout = _socket.ReceiveTimeout = connectTimeout;
+            //var address = new IPEndPoint(remoteIp, port);
+            this.socket = new StreamSocket();
+            
+            await this.socket.ConnectAsync(new HostName(this.remoteIp.ToString()), port.ToString());
+            
+            //this.socket.SendTimeout = socket.ReceiveTimeout = connectTimeout;
 
-            _out = new NetworkStream(_socket, FileAccess.Write);
-            _in = new NetworkStream(_socket, FileAccess.Read);
-
-            // the version message never uses check-summing. Update check-summing property after version is read.
-            serializer = new BitcoinSerializer(networkParams, true);  // SDL: Checksuming now ALWAYS necessary
+            this.output = this.socket.OutputStream.AsStreamForWrite();
+            this.input = this.socket.InputStream.AsStreamForRead();
 
             versionMessage = Handshake(networkParams, bestHeight);
          
@@ -100,7 +102,7 @@ namespace CoinRT
             ReadMessage();
 
             // Switch to the new protocol version.
-            Log.InfoFormat("Connected to peer: version={0}, subVer='{1}', services=0x{2:X}, time={3}, blocks={4}",
+            Log.Info("Connected to peer: version={0}, subVer='{1}', services=0x{2:X}, time={3}, blocks={4}",
                             versionMsg.ClientVersion,
                             versionMsg.SubVer,
                             versionMsg.LocalServices,
@@ -125,13 +127,6 @@ namespace CoinRT
             return versionMsg;
         }
 
-        /// <exception cref="IOException"/>
-        /// <exception cref="ProtocolException"/>
-        public NetworkConnection(IPAddress inetAddress, NetworkParameters networkParams, uint bestHeight, int connectTimeout)
-            : this(new PeerAddress(inetAddress), networkParams, bestHeight, connectTimeout)
-        {
-        }
-
         /// <summary>
         /// Sends a "ping" message to the remote node. The protocol doesn't presently use this feature much.
         /// </summary>
@@ -148,13 +143,12 @@ namespace CoinRT
         /// <exception cref="IOException"/>
         public virtual void Shutdown()
         {
-            _socket.Disconnect(false);
-            _socket.Close();
+            socket.Dispose();
         }
 
         public override string ToString()
         {
-            return "[" + remoteIp + "]:" + _params.Port + " (" + (_socket.Connected ? "connected" : "disconnected") + ")";
+            return "[" + remoteIp + "]:" + networkParams.Port + " (" + (socket.Connected ? "connected" : "disconnected") + ")";
         }
 
         /// <summary>
@@ -165,7 +159,7 @@ namespace CoinRT
         /// <exception cref="IOException"/>
         public virtual Message ReadMessage()
         {
-            return serializer.Deserialize(_in);
+            return serializer.Deserialize(input);
         }
 
         /// <summary>
@@ -176,9 +170,9 @@ namespace CoinRT
         /// <exception cref="IOException"/>
         public virtual void WriteMessage(Message message)
         {
-            lock (_out)
+            lock (output)
             {
-                serializer.Serialize(message, _out);
+                serializer.Serialize(message, output);
             }
         }
 
@@ -194,20 +188,20 @@ namespace CoinRT
 
         public void Dispose()
         {
-            if (_in != null)
+            if (input != null)
             {
-                _in.Dispose();
-                _in = null;
+                input.Dispose();
+                input = null;
             }
-            if (_out != null)
+            if (output != null)
             {
-                _out.Dispose();
-                _out = null;
+                output.Dispose();
+                output = null;
             }
-            if (_socket != null)
+            if (socket != null)
             {
-                ((IDisposable)_socket).Dispose();
-                _socket = null;
+                socket.Dispose();
+                socket = null;
             }
         }
 

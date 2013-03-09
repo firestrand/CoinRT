@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace CoinRT.Discovery
 {
@@ -56,9 +57,9 @@ namespace CoinRT.Discovery
         /// Returns an array containing all the Bitcoin nodes within the list.
         /// </summary>
         /// <exception cref="PeerDiscoveryException"/>
-        public IEnumerable<EndPoint> GetPeers()
+        public Task<IEnumerable<EndPoint>> GetPeers()
         {
-            return AllPeers();
+            return Task.Run(() => AllPeers());
         }
 
         private IEnumerable<EndPoint> AllPeers()

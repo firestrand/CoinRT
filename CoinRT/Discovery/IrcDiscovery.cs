@@ -18,8 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
+using Windows.Networking.Sockets;
 using MetroLog;
+using System.Threading.Tasks;
+using Windows.Networking;
+using Windows.Storage.Streams;
 
 namespace CoinRT.Discovery
 {
@@ -72,29 +75,32 @@ namespace CoinRT.Discovery
         /// does not mean it is accepting connections.
         /// </summary>
         /// <exception cref="PeerDiscoveryException"/>
-        public IEnumerable<EndPoint> GetPeers()
+        public async Task<IEnumerable<EndPoint>> GetPeers()
         {
             var addresses = new List<EndPoint>();
-            using (var connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+            using (var connection = new StreamSocket())
             {
                 try
                 {
-                    connection.Connect(_server, _port);
-                    using (var writer = new StreamWriter(new NetworkStream(connection, FileAccess.Write)))
-                    using (var reader = new StreamReader(new NetworkStream(connection, FileAccess.Read)))
+                    await connection.ConnectAsync(new HostName(_server), _port.ToString());
+
+                    using (var writer = new StreamWriter(connection.OutputStream.AsStreamForWrite()))
+                    using (var reader = new StreamReader(connection.InputStream.AsStreamForRead()))
                     {
+                        
                         // Generate a random nick for the connection. This is chosen to be clearly identifiable as coming from
                         // BitCoinRT but not match the standard nick format, so full peers don't try and connect to us.
-                        var nickRnd = string.Format("bcs{0}", new Random().Next(int.MaxValue));
-                        var command = "NICK " + nickRnd;
+                        string nickRnd = string.Format("bcs{0}", new Random().Next(int.MaxValue));
+                        string command = "NICK " + nickRnd;
+
                         LogAndSend(writer, command);
                         // USER <user> <mode> <unused> <realname> (RFC 2812)
                         command = "USER " + nickRnd + " 8 *: " + nickRnd;
                         LogAndSend(writer, command);
-                        writer.Flush();
 
                         // Wait to be logged in. Worst case we end up blocked until the server PING/PONGs us out.
                         string currLine;
+
                         while ((currLine = reader.ReadLine()) != null)
                         {
                             OnIrcReceive(currLine);
@@ -154,7 +160,7 @@ namespace CoinRT.Discovery
         private void LogAndSend(TextWriter writer, string command)
         {
             OnIrcSend(command);
-            writer.WriteLine(command);
+            writer.Write(command);
         }
 
         // Visible for testing.
@@ -183,7 +189,7 @@ namespace CoinRT.Discovery
                 }
                 catch (AddressFormatException)
                 {
-                    Log.WarnFormat("IRC nick does not parse as base58: {0}", user);
+                    Log.Warn("IRC nick does not parse as base58: {0}", user);
                     continue;
                 }
 

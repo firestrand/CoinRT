@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace CoinRT.Discovery
 {
@@ -31,6 +32,6 @@ namespace CoinRT.Discovery
         /// Returns an array of addresses. This method may block.
         /// </summary>
         /// <exception cref="PeerDiscoveryException"/>
-        IEnumerable<EndPoint> GetPeers();
+        Task<IEnumerable<EndPoint>> GetPeers();
     }
 }
