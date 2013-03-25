@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 using MetroLog;
 using System.Threading.Tasks;
 using Windows.Networking.Sockets;
@@ -69,9 +70,9 @@ namespace CoinRT.Discovery
         }
 
         /// <exception cref="PeerDiscoveryException"/>
-        public async Task<IEnumerable<EndPoint>> GetPeers()
+        public async Task<IEnumerable<IPEndPoint>> GetPeers()
         {
-            ICollection<EndPoint> addresses = new HashSet<EndPoint>();
+            ICollection<IPEndPoint> addresses = new HashSet<IPEndPoint>();
 
             /*
              * Keep track of how many lookups failed vs. succeeded.
@@ -90,8 +91,9 @@ namespace CoinRT.Discovery
                     {
                         // DNS isn't going to provide us with the port.
                         // Grab the port from the specified NetworkParameters.
-                        
-                        var socketAddress = new DnsEndPoint(inetAddress.RemoteHostName.RawName, _netParams.Port);
+
+                        IPAddress ip = ParseIP(inetAddress.RemoteHostName.RawName);
+                        var socketAddress = new IPEndPoint(ip, _netParams.Port);
 
                         // Only add the new address if it's not already in the combined list.
                         if (!addresses.Contains(socketAddress))
@@ -115,6 +117,14 @@ namespace CoinRT.Discovery
             }
 
             return addresses;
+        }
+
+        private IPAddress ParseIP(string ip)
+        {
+            var bytes = from part in ip.Split('.')
+                        select byte.Parse(part);
+            return new IPAddress(bytes.ToArray());
+
         }
 
         /// <summary>

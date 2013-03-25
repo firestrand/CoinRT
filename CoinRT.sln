@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinRT", "CoinRT\CoinRT.csproj", "{2087FEE0-FD28-4EB6-AC57-EF4321C95692}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinSharp.Core", "..\CoinSharp\src\Core\CoinSharp.Core.csproj", "{82B20619-3469-4DB6-8D18-628B64842499}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,14 +25,6 @@ Global
 		{2087FEE0-FD28-4EB6-AC57-EF4321C95692}.Release|ARM.Build.0 = Release|ARM
 		{2087FEE0-FD28-4EB6-AC57-EF4321C95692}.Release|x86.ActiveCfg = Release|x86
 		{2087FEE0-FD28-4EB6-AC57-EF4321C95692}.Release|x86.Build.0 = Release|x86
-		{82B20619-3469-4DB6-8D18-628B64842499}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82B20619-3469-4DB6-8D18-628B64842499}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82B20619-3469-4DB6-8D18-628B64842499}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{82B20619-3469-4DB6-8D18-628B64842499}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{82B20619-3469-4DB6-8D18-628B64842499}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82B20619-3469-4DB6-8D18-628B64842499}.Release|Any CPU.Build.0 = Release|Any CPU
-		{82B20619-3469-4DB6-8D18-628B64842499}.Release|ARM.ActiveCfg = Release|Any CPU
-		{82B20619-3469-4DB6-8D18-628B64842499}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

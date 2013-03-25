@@ -21,6 +21,7 @@ using Windows.Networking.Sockets;
 using CoinRT.Common;
 using MetroLog;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace CoinRT
 {
@@ -63,16 +64,15 @@ namespace CoinRT
         /// <param name="connectTimeout">Timeout in milliseconds when initially connecting to peer</param>
         /// <exception cref="IOException">If there is a network related failure.</exception>
         /// <exception cref="ProtocolException">If the version negotiation failed.</exception>
-        public async void Connect(PeerAddress peerAddress, uint bestHeight, int connectTimeout)
+        public async Task Connect(PeerAddress peerAddress, uint bestHeight, int connectTimeout)
         {
             
             this.remoteIp = peerAddress.Addr;
 
             var port = (peerAddress.Port > 0) ? peerAddress.Port : this.networkParams.Port;
 
-            //var address = new IPEndPoint(remoteIp, port);
             this.socket = new StreamSocket();
-            
+
             await this.socket.ConnectAsync(new HostName(this.remoteIp.ToString()), port.ToString());
             
             //this.socket.SendTimeout = socket.ReceiveTimeout = connectTimeout;

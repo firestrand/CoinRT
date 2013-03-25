@@ -71,6 +71,8 @@ namespace CoinRT
         {
         }
 
+
+
         /// <exception cref="IOException"/>
         public override void BitcoinSerializeToStream(Stream stream)
         {

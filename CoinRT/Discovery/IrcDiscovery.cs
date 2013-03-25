@@ -75,9 +75,9 @@ namespace CoinRT.Discovery
         /// does not mean it is accepting connections.
         /// </summary>
         /// <exception cref="PeerDiscoveryException"/>
-        public async Task<IEnumerable<EndPoint>> GetPeers()
+        public async Task<IEnumerable<IPEndPoint>> GetPeers()
         {
-            var addresses = new List<EndPoint>();
+            var addresses = new List<IPEndPoint>();
             using (var connection = new StreamSocket())
             {
                 try
@@ -117,7 +117,7 @@ namespace CoinRT.Discovery
                         LogAndSend(writer, "JOIN " + _channel);
                         // List users in channel.
                         LogAndSend(writer, "NAMES " + _channel);
-                        writer.Flush();
+                        //writer.Flush();
 
                         // A list of the users should be returned. Look for code 353 and parse until code 366.
                         while ((currLine = reader.ReadLine()) != null)
@@ -145,7 +145,7 @@ namespace CoinRT.Discovery
                         // Quit the server.
                         LogAndSend(writer, "PART " + _channel);
                         LogAndSend(writer, "QUIT");
-                        writer.Flush();
+                        //writer.Flush();
                     }
                 }
                 catch (Exception e)
@@ -164,9 +164,9 @@ namespace CoinRT.Discovery
         }
 
         // Visible for testing.
-        internal static IList<EndPoint> ParseUserList(IEnumerable<string> userNames)
+        internal static IList<IPEndPoint> ParseUserList(IEnumerable<string> userNames)
         {
-            var addresses = new List<EndPoint>();
+            var addresses = new List<IPEndPoint>();
             foreach (var user in userNames)
             {
                 // All BitCoin peers start their nicknames with a 'u' character.

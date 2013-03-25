@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading;
 using CoinRT.Messages;
 using MetroLog;
+using System.Threading.Tasks;
 
 namespace CoinRT
 {
@@ -95,23 +96,24 @@ namespace CoinRT
         /// Connects to the peer.
         /// </summary>
         /// <exception cref="PeerException">When there is a temporary problem with the peer and we should retry later.</exception>
-        public void Connect()
+        public async Task Connect()
         {
-            lock (this)
+            try
             {
-                try
-                {
-                    _conn = new NetworkConnection(_params);
-                    _conn.Connect(_address, _bestHeight, 60000);
-                }
-                catch (IOException ex)
-                {
-                    throw new PeerException(ex);
-                }
-                catch (ProtocolException ex)
-                {
-                    throw new PeerException(ex);
-                }
+                _conn = new NetworkConnection(_params);
+                await _conn.Connect(_address, _bestHeight, 60000);
+            }
+            catch (IOException ex)
+            {
+                throw new PeerException(ex);
+            }
+            catch (ProtocolException ex)
+            {
+                throw new PeerException(ex);
+            }
+            catch (Exception ex)
+            {
+                throw new PeerException(ex);
             }
         }
 

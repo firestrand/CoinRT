@@ -32,6 +32,6 @@ namespace CoinRT.Discovery
         /// Returns an array of addresses. This method may block.
         /// </summary>
         /// <exception cref="PeerDiscoveryException"/>
-        Task<IEnumerable<EndPoint>> GetPeers();
+        Task<IEnumerable<IPEndPoint>> GetPeers();
     }
 }

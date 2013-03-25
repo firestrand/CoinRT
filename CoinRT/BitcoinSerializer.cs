@@ -116,6 +116,7 @@ namespace CoinRT
 
             @out.Write(header);
             @out.Write(payload);
+            @out.Flush();
 
             if (Log.IsDebugEnabled)
                 Log.Debug("Sending {0} message: {1}", name, Utils.BytesToHexString(header) + Utils.BytesToHexString(payload));

@@ -27,6 +27,7 @@ using CoinRT.Discovery;
 using CoinRT.Store;
 using CoinRT.Util;
 using MetroLog;
+using System.Threading.Tasks;
 
 namespace CoinRT
 {
@@ -50,7 +51,7 @@ namespace CoinRT
     {
         private const int MaxPeerConnections = 1;
 
-        private const int PeerGroupTimerInterval = 10000;
+        private const int PeerGroupTimerInterval = 7000;
 
         private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
@@ -204,7 +205,7 @@ namespace CoinRT
         /// we will ask the executor to shutdown and ask each peer to disconnect. At that point
         /// no threads or network connections will be active.
         /// </remarks>
-        public void PeerGroupTimerCallback(object state)
+        public async void PeerGroupTimerCallback(object state)
         {
             try
             {
@@ -215,7 +216,7 @@ namespace CoinRT
 
                 if (_inactives.Count == 0)
                 {
-                    DiscoverPeers();
+                    await DiscoverPeers();
                 }
 
                 AllocateNextPeer();
@@ -226,11 +227,11 @@ namespace CoinRT
             }
         }
 
-        private async void DiscoverPeers()
+        private async Task DiscoverPeers()
         {
             foreach (var peerDiscovery in _peerDiscoverers)
             {
-                IEnumerable<EndPoint> addresses;
+                IEnumerable<IPEndPoint> addresses;
                 try
                 {
                     addresses = await peerDiscovery.GetPeers();
@@ -244,7 +245,7 @@ namespace CoinRT
 
                 foreach (var address in addresses)
                 {
-                    _inactives.Enqueue(new PeerAddress((IPEndPoint)address));
+                    _inactives.Enqueue(new PeerAddress(address));
                 }
 
                 if (_inactives.Count > 0) break;
@@ -284,12 +285,12 @@ namespace CoinRT
             }
         }
 
-        private void ConnectAndRun(Peer peer, CancellationToken token)
+        private async void ConnectAndRun(Peer peer, CancellationToken token)
         {
             try
             {
                 Log.Info("Connecting to " + peer);
-                peer.Connect();
+                await peer.Connect();
                 HandleNewPeer(peer);
                 peer.Run(token);
             }
