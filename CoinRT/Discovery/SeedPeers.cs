@@ -57,7 +57,7 @@ namespace CoinRT.Discovery
         /// Returns an array containing all the Bitcoin nodes within the list.
         /// </summary>
         /// <exception cref="PeerDiscoveryException"/>
-        public Task<IEnumerable<IPEndPoint>> GetPeers()
+        public Task<IEnumerable<IPEndPoint>> GetPeersAsync()
         {
             return Task.Run(() => AllPeers());
         }

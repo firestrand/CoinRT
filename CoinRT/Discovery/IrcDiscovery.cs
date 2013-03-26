@@ -75,7 +75,7 @@ namespace CoinRT.Discovery
         /// does not mean it is accepting connections.
         /// </summary>
         /// <exception cref="PeerDiscoveryException"/>
-        public async Task<IEnumerable<IPEndPoint>> GetPeers()
+        public async Task<IEnumerable<IPEndPoint>> GetPeersAsync()
         {
             var addresses = new List<IPEndPoint>();
             using (var connection = new StreamSocket())

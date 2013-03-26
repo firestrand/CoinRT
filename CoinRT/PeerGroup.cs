@@ -15,19 +15,19 @@
  */
 extern alias Tpl;
 
+using CoinRT.Discovery;
+using CoinRT.Store;
+using CoinRT.Util;
+using MetroLog;
 using System;
-using Tpl::System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using CoinRT.Discovery;
-using CoinRT.Store;
-using CoinRT.Util;
-using MetroLog;
 using System.Threading.Tasks;
+using Tpl::System.Collections.Concurrent;
 
 namespace CoinRT
 {
@@ -49,7 +49,7 @@ namespace CoinRT
     /// </remarks>
     public class PeerGroup
     {
-        private const int MaxPeerConnections = 1;
+        private const int MaxPeerConnections = 6;
 
         private const int PeerGroupTimerInterval = 7000;
 
@@ -110,7 +110,7 @@ namespace CoinRT
             _inactives = new ConcurrentQueue<PeerAddress>();
             _peers = new List<Peer>();
             _peerDiscoverers = new List<IPeerDiscovery>();
-            peerGroupTimer = new SingleEntryTimer(PeerGroupTimerCallback);
+            peerGroupTimer = new SingleEntryTimer(PeerGroupTimerCallbackAsync);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace CoinRT
         /// we will ask the executor to shutdown and ask each peer to disconnect. At that point
         /// no threads or network connections will be active.
         /// </remarks>
-        public async void PeerGroupTimerCallback(object state)
+        public async void PeerGroupTimerCallbackAsync(object state)
         {
             try
             {
@@ -216,7 +216,7 @@ namespace CoinRT
 
                 if (_inactives.Count == 0)
                 {
-                    await DiscoverPeers();
+                    await DiscoverPeersAsync();
                 }
 
                 AllocateNextPeer();
@@ -227,14 +227,14 @@ namespace CoinRT
             }
         }
 
-        private async Task DiscoverPeers()
+        private async Task DiscoverPeersAsync()
         {
             foreach (var peerDiscovery in _peerDiscoverers)
             {
                 IEnumerable<IPEndPoint> addresses;
                 try
                 {
-                    addresses = await peerDiscovery.GetPeers();
+                    addresses = await peerDiscovery.GetPeersAsync();
                 }
                 catch (PeerDiscoveryException e)
                 {
@@ -268,7 +268,7 @@ namespace CoinRT
             try
             {
                 var peer = new Peer(networkParams, address, _blockStore.GetChainHead().Height, _chain);
-                var workerAllocated = peerConnectionPool.TryAllocateWorker(token => ConnectAndRun(peer, token));
+                var workerAllocated = peerConnectionPool.TryAllocateWorker(token => ConnectAndRunAsync(peer, token));
 
                 if (!workerAllocated)
                 {
@@ -285,12 +285,12 @@ namespace CoinRT
             }
         }
 
-        private async void ConnectAndRun(Peer peer, CancellationToken token)
+        private async void ConnectAndRunAsync(Peer peer, CancellationToken token)
         {
             try
             {
                 Log.Info("Connecting to " + peer);
-                await peer.Connect();
+                await peer.ConnectAsync();
                 HandleNewPeer(peer);
                 peer.Run(token);
             }

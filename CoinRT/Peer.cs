@@ -96,12 +96,12 @@ namespace CoinRT
         /// Connects to the peer.
         /// </summary>
         /// <exception cref="PeerException">When there is a temporary problem with the peer and we should retry later.</exception>
-        public async Task Connect()
+        public async Task ConnectAsync()
         {
             try
             {
                 _conn = new NetworkConnection(_params);
-                await _conn.Connect(_address, _bestHeight, 60000);
+                await _conn.ConnectAsync(_address, _bestHeight);
             }
             catch (IOException ex)
             {

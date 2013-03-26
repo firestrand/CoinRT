@@ -61,21 +61,16 @@ namespace CoinRT
         /// <param name="peerAddress">IP address to connect to. IPv6 is not currently supported by BitCoin. If port is not positive the default port from params is used.</param>
         /// <param name="networkParams">Defines which network to connect to and details of the protocol.</param>
         /// <param name="bestHeight">How many blocks are in our best chain</param>
-        /// <param name="connectTimeout">Timeout in milliseconds when initially connecting to peer</param>
         /// <exception cref="IOException">If there is a network related failure.</exception>
         /// <exception cref="ProtocolException">If the version negotiation failed.</exception>
-        public async Task Connect(PeerAddress peerAddress, uint bestHeight, int connectTimeout)
+        public async Task ConnectAsync(PeerAddress peerAddress, uint bestHeight)
         {
-            
             this.remoteIp = peerAddress.Addr;
 
             var port = (peerAddress.Port > 0) ? peerAddress.Port : this.networkParams.Port;
 
             this.socket = new StreamSocket();
-
             await this.socket.ConnectAsync(new HostName(this.remoteIp.ToString()), port.ToString());
-            
-            //this.socket.SendTimeout = socket.ReceiveTimeout = connectTimeout;
 
             this.output = this.socket.OutputStream.AsStreamForWrite();
             this.input = this.socket.InputStream.AsStreamForRead();

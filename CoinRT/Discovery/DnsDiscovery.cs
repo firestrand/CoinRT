@@ -70,7 +70,7 @@ namespace CoinRT.Discovery
         }
 
         /// <exception cref="PeerDiscoveryException"/>
-        public async Task<IEnumerable<IPEndPoint>> GetPeers()
+        public async Task<IEnumerable<IPEndPoint>> GetPeersAsync()
         {
             ICollection<IPEndPoint> addresses = new HashSet<IPEndPoint>();
 
