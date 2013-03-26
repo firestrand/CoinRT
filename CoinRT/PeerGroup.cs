@@ -51,7 +51,7 @@ namespace CoinRT
     {
         private const int MaxPeerConnections = 6;
 
-        private const int PeerGroupTimerInterval = 7000;
+        private const int PeerGroupTimerInterval = 5000;
 
         private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
 
@@ -60,7 +60,7 @@ namespace CoinRT
         /// </summary>
         private readonly ConcurrentQueue<PeerAddress> _inactives;
 
-        private readonly IThreadWorkerPool peerConnectionPool;
+        private IThreadWorkerPool peerConnectionPool;
 
         private readonly SingleEntryTimer peerGroupTimer;
 
@@ -148,6 +148,7 @@ namespace CoinRT
             lock (syncRoot)
             {
                 _running = true;
+                peerConnectionPool = new ThreadWorkerPool(MaxPeerConnections);
                 peerGroupTimer.Change(0, PeerGroupTimerInterval);
             }
         }
@@ -167,6 +168,7 @@ namespace CoinRT
                 {
                     _running = false;
                     peerGroupTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    peerConnectionPool.Shutdown();
                 }
             }
         }
