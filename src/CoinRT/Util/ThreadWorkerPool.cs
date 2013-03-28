@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 using CoinRT.Common;
 using MetroLog;
 
@@ -44,27 +45,34 @@ namespace CoinRT.Util
 
         public bool TryAllocateWorker(Action<CancellationToken> action)
         {
+            // Shutdown in progress;
             if (cts.IsCancellationRequested)
             {
                 return false;
             }
 
+            // Return immediately if the pool is full.
             if (!threadCount.Wait(0))
             {
                 return false;
             }
 
-            Task.Factory
-                .StartNew(() => action(cts.Token), cts.Token)
-                .ContinueWith(t =>
-                                  {
-                                      threadCount.Release();
-                                      if (t.IsFaulted && t.Exception != null)
-                                      {
-                                          Log.Error("Unhandled exception in worker thread", t.Exception.InnerException);
-                                      }
-                                  });
+            StartWorker(action);
             return true;
+        }
+
+        private async void StartWorker(Action<CancellationToken> action)
+        {
+            try
+            {
+                await Task.Factory.StartNew(() => action(cts.Token), cts.Token);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Unhandled exception in worker thread", ex);
+            }
+
+            threadCount.Release();
         }
     }
 }
