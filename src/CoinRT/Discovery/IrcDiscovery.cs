@@ -117,7 +117,6 @@ namespace CoinRT.Discovery
                         LogAndSend(writer, "JOIN " + _channel);
                         // List users in channel.
                         LogAndSend(writer, "NAMES " + _channel);
-                        //writer.Flush();
 
                         // A list of the users should be returned. Look for code 353 and parse until code 366.
                         while ((currLine = reader.ReadLine()) != null)
@@ -145,7 +144,6 @@ namespace CoinRT.Discovery
                         // Quit the server.
                         LogAndSend(writer, "PART " + _channel);
                         LogAndSend(writer, "QUIT");
-                        //writer.Flush();
                     }
                 }
                 catch (Exception e)
@@ -161,6 +159,7 @@ namespace CoinRT.Discovery
         {
             OnIrcSend(command);
             writer.Write(command);
+            writer.Flush();
         }
 
         // Visible for testing.
