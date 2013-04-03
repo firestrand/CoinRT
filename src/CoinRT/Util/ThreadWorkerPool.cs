@@ -14,7 +14,7 @@ namespace CoinRT.Util
     {
         bool IsFull { get; }
         void Shutdown();
-        bool TryAllocateWorker(Action<CancellationToken> action);
+        bool TryAllocateWorker(Func<CancellationToken, Task> action);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ namespace CoinRT.Util
             cts.Cancel();
         }
 
-        public bool TryAllocateWorker(Action<CancellationToken> action)
+        public bool TryAllocateWorker(Func<CancellationToken, Task> action)
         {
             // Shutdown in progress;
             if (cts.IsCancellationRequested)
@@ -61,11 +61,11 @@ namespace CoinRT.Util
             return true;
         }
 
-        private async void StartWorker(Action<CancellationToken> action)
+        private async void StartWorker(Func<CancellationToken, Task> action)
         {
             try
             {
-                await Task.Factory.StartNew(() => action(cts.Token), cts.Token);
+                await Task.Run(async () => await action(cts.Token), cts.Token);
             }
             catch (Exception ex)
             {

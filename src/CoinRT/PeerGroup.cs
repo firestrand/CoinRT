@@ -270,7 +270,7 @@ namespace CoinRT
             try
             {
                 var peer = new Peer(networkParams, address, _blockStore.GetChainHead().Height, _chain);
-                var workerAllocated = peerConnectionPool.TryAllocateWorker(token => ConnectAndRunAsync(peer, token));
+                var workerAllocated = peerConnectionPool.TryAllocateWorker(async token => await ConnectAndRunAsync(peer, token));
 
                 if (!workerAllocated)
                 {
@@ -287,7 +287,7 @@ namespace CoinRT
             }
         }
 
-        private async void ConnectAndRunAsync(Peer peer, CancellationToken token)
+        private async Task ConnectAndRunAsync(Peer peer, CancellationToken token)
         {
             try
             {
@@ -380,7 +380,7 @@ namespace CoinRT
 
                 if (PeerConnected != null)
                 {
-                    PeerConnected(this, new PeerConnectedEventArgs(_peers.Count));
+                    PeerConnected(this, new PeerConnectedEventArgs(_peers.Count, peer.ToString()));
                 }
             }
         }
@@ -389,9 +389,11 @@ namespace CoinRT
         {
             lock (syncRoot)
             {
+                bool removed;
+
                 lock (_peers)
                 {
-                    _peers.Remove(peer);
+                    removed = _peers.Remove(peer);
                 }
 
                 if (peer == _downloadPeer)
@@ -407,9 +409,9 @@ namespace CoinRT
                     }
                 }
 
-                if (PeerDisconnected != null)
+                if (removed && PeerDisconnected != null)
                 {
-                    PeerDisconnected(this, new PeerDisconnectedEventArgs(_peers.Count));
+                    PeerDisconnected(this, new PeerDisconnectedEventArgs(_peers.Count, peer.ToString()));
                 }
             }
         }
@@ -443,10 +445,12 @@ namespace CoinRT
         /// The total number of connected peers.
         /// </summary>
         public int PeerCount { get; private set; }
+        public string PeerInfo { get; private set; }
 
-        public PeerConnectedEventArgs(int peerCount)
+        public PeerConnectedEventArgs(int peerCount, string peerInfo)
         {
             PeerCount = peerCount;
+            PeerInfo = peerInfo;
         }
     }
 
@@ -459,10 +463,12 @@ namespace CoinRT
         /// The total number of connected peers.
         /// </summary>
         public int PeerCount { get; private set; }
+        public string PeerInfo { get; private set; }
 
-        public PeerDisconnectedEventArgs(int peerCount)
+        public PeerDisconnectedEventArgs(int peerCount, string peerInfo)
         {
             PeerCount = peerCount;
+            PeerInfo = peerInfo;
         }
     }
 }
