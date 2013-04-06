@@ -189,21 +189,28 @@ namespace CoinRT
         public static async Task<Wallet> LoadFromFileAsync(string path)
         {
             string json;
-            StorageFile file = await StorageFile.GetFileFromPathAsync(path);
-            using (IInputStream stream = await file.OpenSequentialReadAsync())
-            using (var reader = new StreamReader(stream.AsStreamForRead()))
+            try
             {
-                json = await reader.ReadToEndAsync();
+                StorageFile file = await StorageFile.GetFileFromPathAsync(path);
+                using (IInputStream stream = await file.OpenSequentialReadAsync())
+                using (var reader = new StreamReader(stream.AsStreamForRead()))
+                {
+                    json = await reader.ReadToEndAsync();
+                }
+
+                using (var ms = new MemoryStream())
+                using (var writer = new StreamWriter(ms))
+                {
+                    await writer.WriteAsync(json);
+                    await writer.FlushAsync();
+
+                    ms.Position = 0;
+                    return LoadFromStream(ms);
+                }
             }
-
-            using (var ms = new MemoryStream())
-            using (var writer = new StreamWriter(ms))
+            catch (FileNotFoundException)
             {
-                await writer.WriteAsync(json);
-                await writer.FlushAsync();
-
-                ms.Position = 0;
-                return LoadFromStream(ms);
+                return null;
             }
         }
 
