@@ -73,7 +73,7 @@ namespace CoinRT
 
         /// <summary>
         /// Constructs a BlockChain connected to the given wallet and store. To obtain a <see cref="Wallet"/> you can construct
-        /// one from scratch, or you can deserialize a saved wallet from disk using <see cref="Wallet.LoadFromFile"/>.
+        /// one from scratch, or you can deserialize a saved wallet from disk using <see cref="Wallet.LoadFromFileAsync"/>.
         /// </summary>
         /// <remarks>
         /// For the store you can use a <see cref="MemoryBlockStore"/> if you don't care about saving the downloaded data, or a

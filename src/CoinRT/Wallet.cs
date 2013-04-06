@@ -23,6 +23,10 @@ using System.Text;
 using MetroLog;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using System.IO.IsolatedStorage;
+using System.Threading.Tasks;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace CoinRT
 {
@@ -155,14 +159,13 @@ namespace CoinRT
         /// Uses Java serialization to save the wallet to the given file.
         /// </summary>
         /// <exception cref="IOException"/>
-        public void SaveToFile(FileInfo f)
+        public async void SaveToFileAsync(string path)
         {
-            lock (this)
+            IStorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(path, CreationCollisionOption.ReplaceExisting);
+            using (var stream = await file.OpenStreamForWriteAsync())
             {
-                using (var stream = f.OpenWrite())
-                {
-                    SaveToFileStream(stream);
-                }
+                SaveToStream(stream);
+                await stream.FlushAsync();
             }
         }
 
@@ -170,7 +173,7 @@ namespace CoinRT
         /// Uses Java serialization to save the wallet to the given file stream.
         /// </summary>
         /// <exception cref="IOException"/>
-        public void SaveToFileStream(FileStream f)
+        public void SaveToStream(Stream f)
         {
             lock (this)
             {
@@ -183,19 +186,36 @@ namespace CoinRT
         /// Returns a wallet deserialized from the given file.
         /// </summary>
         /// <exception cref="IOException"/>
-        public static Wallet LoadFromFile(FileInfo f)
+        public static async Task<Wallet> LoadFromFileAsync(string path)
         {
-            return LoadFromFileStream(f.OpenRead());
+            string json;
+            StorageFile file = await StorageFile.GetFileFromPathAsync(path);
+            using (IInputStream stream = await file.OpenSequentialReadAsync())
+            using (var reader = new StreamReader(stream.AsStreamForRead()))
+            {
+                json = await reader.ReadToEndAsync();
+            }
+
+            using (var ms = new MemoryStream())
+            using (var writer = new StreamWriter(ms))
+            {
+                await writer.WriteAsync(json);
+                await writer.FlushAsync();
+
+                ms.Position = 0;
+                return LoadFromStream(ms);
+            }
         }
 
         /// <summary>
         /// Returns a wallet deserialized from the given file input stream.
         /// </summary>
         /// <exception cref="IOException"/>
-        public static Wallet LoadFromFileStream(FileStream f)
+        public static Wallet LoadFromStream(Stream f)
         {
             var ois = new DataContractJsonSerializer(typeof(Wallet));
-            return (Wallet) ois.ReadObject(f);
+            return (Wallet)ois.ReadObject(f);
+            
         }
 
         /// <summary>
