@@ -191,7 +191,7 @@ namespace CoinRT
             string json;
             try
             {
-                StorageFile file = await StorageFile.GetFileFromPathAsync(path);
+                StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync(path);
                 using (IInputStream stream = await file.OpenSequentialReadAsync())
                 using (var reader = new StreamReader(stream.AsStreamForRead()))
                 {
