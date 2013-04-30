@@ -30,6 +30,13 @@ namespace CoinRT
 
         private const ulong _maxInventoryItems = 50000;
 
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public ListMessage()
+        {
+        }
+
         /// <exception cref="ProtocolException"/>
         protected ListMessage(NetworkParameters networkParams, byte[] bytes)
             : base(networkParams, bytes, 0)

@@ -20,11 +20,11 @@ using System.Net;
 using System.Text;
 using CoinRT.IO;
 using CoinRT.Common;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class VersionMessage : Message
     {
         /// <summary>
@@ -69,6 +69,13 @@ namespace CoinRT
         /// How many blocks are in the chain, according to the other side.
         /// </summary>
         public uint BestHeight { get; private set; }
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public VersionMessage()
+        {
+        }
 
         /// <exception cref="ProtocolException"/>
         public VersionMessage(NetworkParameters networkParams, byte[] msg)

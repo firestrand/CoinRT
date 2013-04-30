@@ -15,13 +15,20 @@
  */
 
 using System;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class InventoryMessage : ListMessage
     {
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public InventoryMessage()
+        {
+        }
+
         /// <exception cref="ProtocolException"/>
         public InventoryMessage(NetworkParameters networkParams, byte[] bytes)
             : base(networkParams, bytes)

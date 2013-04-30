@@ -19,16 +19,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CoinRT.IO;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class AddressMessage : Message
     {
         private const ulong MaxAddresses = 1024;
 
         internal IList<PeerAddress> Addresses { get; private set; }
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public AddressMessage()
+        {
+        }
 
         /// <exception cref="ProtocolException"/>
         internal AddressMessage(NetworkParameters networkParams, byte[] payload, int offset)

@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CoinRT.IO;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class GetBlocksMessage : Message
     {
         private readonly IList<Sha256Hash> _locator;
         private readonly Sha256Hash _stopHash;
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public GetBlocksMessage()
+        {
+        }
 
         public GetBlocksMessage(NetworkParameters networkParams, IList<Sha256Hash> locator, Sha256Hash stopHash)
             : base(networkParams)

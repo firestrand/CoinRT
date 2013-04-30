@@ -16,7 +16,7 @@
 
 using System;
 using System.IO;
-using System.Runtime.Serialization;
+using ProtoBuf;
 using System.Text;
 
 namespace CoinRT
@@ -29,15 +29,15 @@ namespace CoinRT
     /// <remarks>
     /// This class is not useful for library users. If you want to talk to the network see the <see cref="Peer"/> class.
     /// </remarks>
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public abstract class Message
     {
         public const uint MaxSize = 0x2000000;
 
-        [IgnoreDataMember] private int _offset;
-        [IgnoreDataMember] private int _cursor;
-        [IgnoreDataMember] private byte[] _bytes;
-        [IgnoreDataMember] private uint _protocolVersion;
+        [ProtoIgnore] private int _offset;
+        [ProtoIgnore] private int _cursor;
+        [ProtoIgnore] private byte[] _bytes;
+        [ProtoIgnore] private uint _protocolVersion;
 
         // The offset is how many bytes into the provided byte array this message starts at.
         protected int Offset
@@ -68,10 +68,11 @@ namespace CoinRT
         }
 
         // This will be saved by subclasses that implement Serializable.
+        [ProtoMember(100,AsReference=true)]
         protected NetworkParameters Params { get; private set; }
 
         /// <summary>
-        /// This exists for the Java serialization framework to use only.
+        /// Used only by ProtoBuf deserializer.
         /// </summary>
         protected Message()
         {

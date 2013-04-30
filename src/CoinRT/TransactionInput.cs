@@ -20,7 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using CoinRT.IO;
 using CoinRT.TransactionScript;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
@@ -30,7 +30,7 @@ namespace CoinRT
     /// transaction as being a module which is wired up to others, the inputs of one have to be wired
     /// to the outputs of another. The exceptions are coinbase transactions, which create new coins.
     /// </summary>
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class TransactionInput : Message
     {
         public static readonly byte[] EmptyArray = new byte[0];
@@ -39,17 +39,30 @@ namespace CoinRT
         // client so this is always the UINT_MAX.
         // TODO: Document this in more detail and build features that use it.
         private uint _sequence;
+        
         // Data needed to connect to the output of the transaction we're gathering coins from.
         internal TransactionOutPoint Outpoint { get; private set; }
+        
         // The "script bytes" might not actually be a script. In coinbase transactions where new coins are minted there
         // is no input transaction, so instead the scriptBytes contains some extra stuff (like a rollover nonce) that we
         // don't care about much. The bytes are turned into a Script object (cached below) on demand via a getter.
         internal byte[] ScriptBytes { get; set; }
+        
         // The Script object obtained from parsing scriptBytes. Only filled in on demand and if the transaction is not
         // coinbase.
-        [IgnoreDataMember] private Script _scriptSig;
+        [ProtoIgnore]
+        private Script _scriptSig;
+        
         // A pointer to the transaction that owns this input.
+        [ProtoMemberAttribute(100,AsReference=true)]
         internal Transaction ParentTransaction { get; private set; }
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public TransactionInput()
+        {
+        }
 
         /// <summary>
         /// Used only in creation of the genesis block.

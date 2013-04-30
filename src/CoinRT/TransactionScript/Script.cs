@@ -84,13 +84,12 @@ namespace CoinRT.TransactionScript
         /// </summary>
         public static string GetOpCodeName(byte opCode)
         {
-            int opcode = opCode & 0xff;
-            if (Enum.IsDefined(typeof(OpCode), opcode))
+            if (Enum.IsDefined(typeof(OpCode), opCode))
             {
-                return ((OpCode)opcode).ToString().ToUpper();
+                return ((OpCode)opCode).ToString().ToUpper();
             }
 
-            return string.Format("NON_OP({0})", opcode);
+            return string.Format("NON_OP({0})", opCode);
         }
 
         private byte[] GetData(int len)

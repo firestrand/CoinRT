@@ -18,7 +18,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using CoinRT.IO;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
@@ -27,7 +27,7 @@ namespace CoinRT
     /// <summary>
     /// This message is a reference or pointer to an output of a different transaction.
     /// </summary>
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class TransactionOutPoint : Message
     {
         /// <summary>
@@ -42,7 +42,15 @@ namespace CoinRT
 
         // This is not part of BitCoin serialization. It's included in Java serialization.
         // It points to the connected transaction.
+        [ProtoMember(100, AsReference = true)]
         internal Transaction FromTx { get; set; }
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public TransactionOutPoint()
+        {
+        }
 
         internal TransactionOutPoint(NetworkParameters networkParams, int index, Transaction fromTx)
             : base(networkParams)

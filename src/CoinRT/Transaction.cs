@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-using CoinRT.IO;
-using CoinRT.TransactionScript;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Text;
+using CoinRT.IO;
+using CoinRT.TransactionScript;
+using ProtoBuf;
 
 namespace CoinRT
 {
@@ -35,17 +35,30 @@ namespace CoinRT
     /// serialization which is used for the wallet. This allows us to easily add extra fields used for our own accounting
     /// or UI purposes.
     /// </remarks>
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class Transaction : Message
     {
         // These are serialized in both BitCoin and java serialization.
         private uint _version;
+
+        [ProtoMember(100, AsReference=true)]
         private List<TransactionInput> _inputs;
+
+        [ProtoMember(101, AsReference = true)]
         private List<TransactionOutput> _outputs;
+
         private uint _lockTime;
 
         // This is an in memory helper only.
-        [IgnoreDataMember] private Sha256Hash _hash;
+        [ProtoIgnore]
+        private Sha256Hash _hash;
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public Transaction()
+        {
+        }
 
         internal Transaction(NetworkParameters networkParams)
             : base(networkParams)

@@ -16,7 +16,7 @@
 
 using CoinRT.Store;
 using Org.BouncyCastle.Math;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
@@ -30,12 +30,19 @@ namespace CoinRT
     /// <remarks>
     /// StoredBlocks are put inside a <see cref="IBlockStore"/> which saves them to memory or disk.
     /// </remarks>
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class StoredBlock
     {
         private readonly Block _header;
         private readonly BigInteger _chainWork;
         private readonly uint _height;
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public StoredBlock()
+        {
+        }
 
         public StoredBlock(Block header, BigInteger chainWork, uint height)
         {

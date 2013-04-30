@@ -16,15 +16,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using CoinRT.IO;
 using CoinRT.Common;
+using CoinRT.IO;
 using CoinRT.TransactionScript;
-using Org.BouncyCastle.Math;
 using MetroLog;
-using System.Runtime.Serialization;
+using Org.BouncyCastle.Math;
+using ProtoBuf;
 
 namespace CoinRT
 {
@@ -38,7 +39,7 @@ namespace CoinRT
     /// or request one specifically using <see cref="Peer.BeginGetBlock"/>, or grab one from a downloaded
     /// <see cref="BlockChain"/>.
     /// </remarks>
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class Block : Message
     {
         private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
@@ -74,7 +75,15 @@ namespace CoinRT
         /// <summary>
         /// Stores the hash of the block. If null, getHash() will recalculate it.
         /// </summary>
-        [IgnoreDataMember] private Sha256Hash _hash;
+        [ProtoIgnore]
+        private Sha256Hash _hash;
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public Block()
+        {
+        }
 
         /// <summary>
         /// Special case constructor, used for the genesis node, cloneAsHeader and unit tests.

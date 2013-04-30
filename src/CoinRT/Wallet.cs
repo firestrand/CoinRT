@@ -21,12 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using MetroLog;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.IO.IsolatedStorage;
-using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.Storage.Streams;
+using ProtoBuf;
 
 namespace CoinRT
 {
@@ -39,7 +34,7 @@ namespace CoinRT
     /// use the built in Java serialization to avoid the need to pull in a potentially large (code-size) third party
     /// serialization library.<p/>
     /// </remarks>
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class Wallet
     {
         private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
@@ -123,7 +118,7 @@ namespace CoinRT
         /// Note that in the case where a transaction appears in both the best chain and a side chain as well, it is not
         /// placed in this map. It's an error for a transaction to be in both the inactive pool and unspent/spent.
         /// </remarks>
-        private readonly IDictionary<Sha256Hash, Transaction> _inactive;
+        private IDictionary<Sha256Hash, Transaction> _inactive;
 
         /// <summary>
         /// A dead transaction is one that's been overridden by a double spend. Such a transaction is pending except it
@@ -131,7 +126,7 @@ namespace CoinRT
         /// should nearly never happen in normal usage. Dead transactions can be "resurrected" by re-orgs just like any
         /// other. Dead transactions are not in the pending pool.
         /// </summary>
-        private readonly IDictionary<Sha256Hash, Transaction> _dead;
+        private IDictionary<Sha256Hash, Transaction> _dead;
 
         /// <summary>
         /// A list of public/private EC keys owned by this user.
@@ -141,12 +136,10 @@ namespace CoinRT
         private readonly NetworkParameters _params;
 
         /// <summary>
-        /// Creates a new, empty wallet with no keys and no transactions. If you want to restore a wallet from disk instead,
-        /// see loadFromFile.
+        /// Used by ProtoBuf deserializer only.
         /// </summary>
-        public Wallet(NetworkParameters networkParams)
+        public Wallet()
         {
-            _params = networkParams;
             Keychain = new List<EcKey>();
             Unspent = new Dictionary<Sha256Hash, Transaction>();
             Spent = new Dictionary<Sha256Hash, Transaction>();
@@ -156,73 +149,13 @@ namespace CoinRT
         }
 
         /// <summary>
-        /// Uses Java serialization to save the wallet to the given file.
+        /// Creates a new, empty wallet with no keys and no transactions. If you want to restore a wallet from disk instead,
+        /// see loadFromFile.
         /// </summary>
-        /// <exception cref="IOException"/>
-        public async void SaveToFileAsync(string path)
+        public Wallet(NetworkParameters networkParams)
+            : this()
         {
-            IStorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(path, CreationCollisionOption.ReplaceExisting);
-            using (var stream = await file.OpenStreamForWriteAsync())
-            {
-                SaveToStream(stream);
-                await stream.FlushAsync();
-            }
-        }
-
-        /// <summary>
-        /// Uses Java serialization to save the wallet to the given file stream.
-        /// </summary>
-        /// <exception cref="IOException"/>
-        public void SaveToStream(Stream f)
-        {
-            lock (this)
-            {
-                var oos = new DataContractJsonSerializer(typeof(Wallet));
-                oos.WriteObject(f, this);
-            }
-        }
-
-        /// <summary>
-        /// Returns a wallet deserialized from the given file.
-        /// </summary>
-        /// <exception cref="IOException"/>
-        public static async Task<Wallet> LoadFromFileAsync(string path)
-        {
-            string json;
-            try
-            {
-                StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync(path);
-                using (IInputStream stream = await file.OpenSequentialReadAsync())
-                using (var reader = new StreamReader(stream.AsStreamForRead()))
-                {
-                    json = await reader.ReadToEndAsync();
-                }
-
-                using (var ms = new MemoryStream())
-                using (var writer = new StreamWriter(ms))
-                {
-                    await writer.WriteAsync(json);
-                    await writer.FlushAsync();
-
-                    ms.Position = 0;
-                    return LoadFromStream(ms);
-                }
-            }
-            catch (FileNotFoundException)
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Returns a wallet deserialized from the given file input stream.
-        /// </summary>
-        /// <exception cref="IOException"/>
-        public static Wallet LoadFromStream(Stream f)
-        {
-            var ois = new DataContractJsonSerializer(typeof(Wallet));
-            return (Wallet)ois.ReadObject(f);
-            
+            _params = networkParams;
         }
 
         /// <summary>
@@ -861,9 +794,9 @@ namespace CoinRT
                 foreach (var key in Keychain)
                 {
                     builder.Append("  addr:");
-                    builder.Append(key.ToAddress(_params));
+                    //builder.Append(key.ToAddress(_params));
                     builder.Append(" ");
-                    builder.Append(key.ToString());
+                    //builder.Append(key.ToString());
                     builder.AppendLine();
                 }
                 // Print the transactions themselves

@@ -15,14 +15,21 @@
  */
 
 using System;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class UnknownMessage : Message
     {
         private readonly string _name;
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public UnknownMessage()
+        {
+        }
 
         /// <exception cref="ProtocolException"/>
         public UnknownMessage(NetworkParameters networkParams, string name, byte[] payloadBytes)

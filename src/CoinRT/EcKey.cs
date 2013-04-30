@@ -25,7 +25,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
@@ -34,7 +34,7 @@ namespace CoinRT
     /// Bouncy Castle is used. In future this may become an interface with multiple implementations using different crypto
     /// libraries. The class also provides a static method that can verify a signature with just the public key.
     /// </summary>
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class EcKey
     {
         private static readonly ECDomainParameters _ecParams;
@@ -52,12 +52,13 @@ namespace CoinRT
         private readonly BigInteger _priv;
         private readonly byte[] _pub;
 
-        [IgnoreDataMember] private byte[] _pubKeyHash;
+        [ProtoIgnore]
+        private byte[] _pubKeyHash;
 
         /// <summary>
-        /// Generates an entirely new keypair.
+        /// Generates an entirely new, random keypair.
         /// </summary>
-        public EcKey()
+        public static EcKey Create()
         {
             var generator = new ECKeyPairGenerator();
             var keygenParams = new ECKeyGenerationParameters(_ecParams, _secureRandom);
@@ -65,9 +66,9 @@ namespace CoinRT
             var keypair = generator.GenerateKeyPair();
             var privParams = (ECPrivateKeyParameters) keypair.Private;
             var pubParams = (ECPublicKeyParameters) keypair.Public;
-            _priv = privParams.D;
+
             // The public key is an encoded point on the elliptic curve. It has no meaning independent of the curve.
-            _pub = pubParams.Q.GetEncoded();
+            return new EcKey(privParams.D, pubParams.Q.GetEncoded());
         }
 
         /// <summary>
@@ -117,11 +118,24 @@ namespace CoinRT
         }
 
         /// <summary>
+        /// Creates an ECkey from private and public key.
+        /// </summary>
+        private EcKey(BigInteger privKey, byte[] pubKey)
+        {
+            _priv = privKey;
+            _pub = pubKey;
+        }
+
+        /// <summary>
         /// Derive the public key by doing a point multiply of G * priv.
         /// </summary>
         private static byte[] PublicKeyFromPrivate(BigInteger privKey)
         {
             return _ecParams.G.Multiply(privKey).GetEncoded();
+        }
+
+        public EcKey()
+        {
         }
 
         /// <summary>

@@ -20,7 +20,7 @@ using System.IO;
 using CoinRT.IO;
 using CoinRT.TransactionScript;
 using MetroLog;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
@@ -28,7 +28,7 @@ namespace CoinRT
     /// A TransactionOutput message contains a scriptPubKey that controls who is able to spend its value. It is a sub-part
     /// of the Transaction message.
     /// </summary>
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class TransactionOutput : Message
     {
         private static readonly ILogger Log = Common.Logger.GetLoggerForDeclaringType();
@@ -39,17 +39,28 @@ namespace CoinRT
         private byte[] _scriptBytes;
 
         // The script bytes are parsed and turned into a Script on demand.
-        [IgnoreDataMember] private Script _scriptPubKey;
+        [ProtoIgnore]
+        private Script _scriptPubKey;
 
         // These fields are Java serialized but not BitCoin serialized. They are used for tracking purposes in our wallet
         // only. If set to true, this output is counted towards our balance. If false and spentBy is null the tx output
         // was owned by us and was sent to somebody else. If false and spentBy is true it means this output was owned by
         // us and used in one of our own transactions (eg, because it is a change output).
         private bool _availableForSpending;
+
+        [ProtoMember(100, AsReference = true)]
         private TransactionInput _spentBy;
 
         // A reference to the transaction which holds this output.
+        [ProtoMemberAttribute(101, AsReference = true)]
         internal Transaction ParentTransaction { get; set; }
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public TransactionOutput()
+        {
+        }
 
         /// <summary>
         /// Deserializes a transaction output message. This is usually part of a transaction message.

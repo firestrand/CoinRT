@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Linq;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Utilities.Encoders;
-using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace CoinRT
 {
@@ -27,12 +27,19 @@ namespace CoinRT
     /// A Sha256Hash just wraps a byte[] so that equals and hashcode work correctly, allowing it to be used as keys in a
     /// map. It also checks that the length is correct and provides a bit more type safety.
     /// </summary>
-    [DataContract]
+    [ProtoContract(ImplicitFields=ImplicitFields.AllFields)]
     public class Sha256Hash
     {
         private readonly byte[] _bytes;
 
         public static readonly Sha256Hash ZeroHash = new Sha256Hash(new byte[32]);
+
+        /// <summary>
+        /// Used only by ProtoBuf deserializer.
+        /// </summary>
+        public Sha256Hash()
+        {
+        }
 
         /// <summary>
         /// Creates a Sha256Hash by wrapping the given byte array. It must be 32 bytes long.
