@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using NSpec;
 
 namespace CoinRT.UnitTests.Specs
@@ -27,8 +23,6 @@ namespace CoinRT.UnitTests.Specs
 				before = () => input = new byte[] { 255 };
 				it["should become 5Q"] = () => output.should_be("5Q");
 			};
-
-
 		}
 
 		void when_decoding()

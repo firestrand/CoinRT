@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Org.BouncyCastle.Math;
 
 namespace CoinRT
 {
 	/// <summary>
-	/// Represents an encoded BigInteger 
+	/// Represents a base58-encoded number.
 	/// </summary>
 	/// <remarks>
-	/// From Satoshi's code:
+	/// From original Satoshi's code:
 	/// Why base-58 instead of standard base-64 encoding?
 	/// - Don't want 0OIl characters that look the same in some fonts and could be used to create visually identical looking account numbers.
 	/// - A string with non-alphanumeric characters is not as easily accepted as an account number.
@@ -20,8 +18,8 @@ namespace CoinRT
 	/// </remarks>
 	public class Base58
 	{
-		private const string CharSet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-		private static readonly BigInteger Base = new BigInteger("58");
+		private const string CharSet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; // 0OIl removed
+		private static readonly BigInteger Base = BigInteger.ValueOf(58);
 		private byte[] bytes;
 		private readonly BigInteger number;
 		private readonly string encoded;
@@ -68,6 +66,11 @@ namespace CoinRT
 		public byte[] ToByteArray()
 		{
 			return this.bytes;
+		}
+
+		public BigInteger ToBigInteger()
+		{
+			return this.number;
 		}
 
 		public override int GetHashCode()
