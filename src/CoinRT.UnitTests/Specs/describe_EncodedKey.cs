@@ -6,6 +6,40 @@ namespace CoinRT.UnitTests.Specs
 	{
 		EncodedKey key;
 
+		void when_comparing_keys()
+		{
+
+			context["operator =="] = () =>
+			{
+				it["should return true for the same values"] = () =>
+					(new EncodedKey("12L5B5yqsf7vwb") == new EncodedKey("12L5B5yqsf7vwb")).should_be_true();
+				it["should return false for different values"] = () =>
+					(new EncodedKey("12L5B5yqsf7vwb") == new EncodedKey("16sBRWytWaNqQd3")).should_be_false();
+				it["should return false when comparing with null"] = () =>
+					(new EncodedKey("12L5B5yqsf7vwb") == null).should_be_false();
+			};
+
+			context["operator !="] = () =>
+			{
+				it["should return false for the same values"] = () =>
+					(new EncodedKey("12L5B5yqsf7vwb") != new EncodedKey("12L5B5yqsf7vwb")).should_be_false();
+				it["should return true for different values"] = () =>
+					(new EncodedKey("12L5B5yqsf7vwb") != new EncodedKey("16sBRWytWaNqQd3")).should_be_true();
+				it["should return true when comparing with null"] = () =>
+					(new EncodedKey("12L5B5yqsf7vwb") != null).should_be_true();
+			};
+
+			context["Equals method"] = () =>
+			{
+				it["should return true for the same values"] = () =>
+					(new EncodedKey("12L5B5yqsf7vwb").Equals(new EncodedKey("12L5B5yqsf7vwb"))).should_be_true();
+				it["should return false for different values"] = () =>
+					(new EncodedKey("12L5B5yqsf7vwb").Equals(new EncodedKey("16sBRWytWaNqQd3"))).should_be_false();
+				it["should return false when comparing with null"] = () =>
+					(new EncodedKey("12L5B5yqsf7vwb").Equals(null)).should_be_false();
+			};
+		}
+
 		void when_encoding()
 		{
 			context["hello, version 0"] = () =>

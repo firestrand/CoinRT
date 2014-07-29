@@ -44,6 +44,7 @@ namespace CoinRT
 
 		public Base58(string input)
 		{
+			this.encoded = input;
 			this.number = BigInteger.Zero;
 			for (var i = 0; i < input.Length; i++)
 			{
@@ -80,19 +81,26 @@ namespace CoinRT
 			return this.encoded.GetHashCode();
 		}
 
+		public bool Equals(Base58 other)
+		{
+			if (object.ReferenceEquals(other, null)) return false;
+
+			return this.encoded == other.encoded;
+		}
+
 		public override bool Equals(object obj)
 		{
-			return this.encoded.Equals(obj);
+			return Equals(obj as Base58);
 		}
 
 		public static bool operator ==(Base58 left, Base58 right)
 		{
-			return left.encoded == right.encoded;
+			return object.ReferenceEquals(left, right) || !object.ReferenceEquals(left, null) && left.Equals(right);
 		}
 
 		public static bool operator !=(Base58 left, Base58 right)
 		{
-			return left.encoded != right.encoded;
+			return !(left == right);
 		}
 	}
 }

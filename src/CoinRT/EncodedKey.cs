@@ -16,7 +16,7 @@ namespace CoinRT
 			var rawData = new List<byte>(20);
 			rawData.Add(version);
 			rawData.AddRange(key);
-			rawData.AddRange(ComputeChecksum(rawData));
+			rawData.AddRange(ChecksumOf(rawData));
 
 			this.data = new Base58(rawData);
 		}
@@ -25,7 +25,7 @@ namespace CoinRT
 		{
 			this.data = new Base58(encoded);
 
-			if (!this.Checksum.SequenceEqual(ComputeChecksum(this.Version.Concat(this.RawKey))))
+			if (!this.Checksum.SequenceEqual(ChecksumOf(this.Version.Concat(this.RawKey))))
 			{
 				throw new ArgumentException("Checksum is invalid");
 			}
@@ -67,7 +67,29 @@ namespace CoinRT
 			return this.data.GetHashCode();
 		}
 
-		private static IEnumerable<byte> ComputeChecksum(IEnumerable<byte> value)
+		public bool Equals(EncodedKey other)
+		{
+			if (object.ReferenceEquals(other, null)) return false;
+
+			return this.data == other.data;
+		}
+
+		public override bool Equals(object obj)
+		{
+			return Equals(obj as EncodedKey);
+		}
+
+		public static bool operator ==(EncodedKey left, EncodedKey right)
+		{
+			return object.ReferenceEquals(left, right) || !object.ReferenceEquals(left, null) && left.Equals(right);
+		}
+
+		public static bool operator !=(EncodedKey left, EncodedKey right)
+		{
+			return !(left == right);
+		}
+
+		private static IEnumerable<byte> ChecksumOf(IEnumerable<byte> value)
 		{
 			return value.Sha256().Sha256().Take(4);
 		}
