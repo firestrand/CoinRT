@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Org.BouncyCastle.Math;
@@ -24,10 +25,10 @@ namespace CoinRT
 		private readonly BigInteger number;
 		private readonly string encoded;
 
-		public Base58(byte[] input)
+		public Base58(IEnumerable<byte> input)
 		{
-			this.bytes = input;
-			this.number = new BigInteger(1, input);
+			this.bytes = input.ToArray();
+			this.number = new BigInteger(1, this.bytes);
 
 			var sb = new StringBuilder();
 			while (number.CompareTo(BigInteger.Zero) > 0)
@@ -65,7 +66,7 @@ namespace CoinRT
 
 		public byte[] ToByteArray()
 		{
-			return this.bytes;
+			return this.bytes.ToArray();
 		}
 
 		public BigInteger ToBigInteger()
