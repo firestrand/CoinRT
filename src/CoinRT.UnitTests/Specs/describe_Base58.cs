@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using NSpec;
 
 namespace CoinRT.UnitTests.Specs
@@ -9,14 +10,24 @@ namespace CoinRT.UnitTests.Specs
 		string encoded = null;
 		Base58 sut = null;
 
-		void the_value()
+		void encoded_value()
 		{
-			before = () => {
+			before = () =>
+			{
 				sut = new Base58("aaaa");
 				raw = sut.ToByteArray();
 			};
 			act = () => raw[0]++;
+
 			it["should be immutable"] = () => raw.should_not_be_same(sut.ToByteArray());
+		}
+
+		void string_representation()
+		{
+			it["should not contain zero"] = () => expect<ArgumentException>(() => new Base58("0"));
+			it["should not contain one"] = () => expect<ArgumentException>(() => new Base58("1"));
+			it["should not contain lowercase l"] = () => expect<ArgumentException>(() => new Base58("l"));
+			it["should not contain uppercase I"] = () => expect<ArgumentException>(() => new Base58("I"));
 		}
 
 		void when_encoding()
@@ -33,6 +44,12 @@ namespace CoinRT.UnitTests.Specs
 			{
 				before = () => raw = new byte[] { 255 };
 				it["should become 5Q"] = () => encoded.should_be("5Q");
+			};
+
+			context["0-prefixed number"] = () =>
+			{
+				before = () => raw = new byte[] { 0, 0, 0, 33 };
+				it["should become 1-prefixed string"] = () => encoded.should_be("111a");
 			};
 		}
 

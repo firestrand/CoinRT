@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Org.BouncyCastle.Math;
@@ -38,8 +39,9 @@ namespace CoinRT
 				number = div[0];
 			}
 
-			this.encoded = sb.ToString().PadLeft(input.TakeWhile(i => i == 0).Count(), CharSet[0]);
-		}
+			string unpadded = sb.ToString();
+			this.encoded = unpadded.PadLeft(unpadded.Length + input.TakeWhile(i => i == 0).Count(), CharSet[0]);
+	}
 
 		public Base58(string input)
 		{
