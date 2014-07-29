@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoinRT
 {
@@ -18,7 +16,7 @@ namespace CoinRT
 			var rawData = new List<byte>(20);
 			rawData.Add(version);
 			rawData.AddRange(key);
-			rawData.AddRange(rawData.Sha256().Sha256().Take(4));
+			rawData.AddRange(ComputeChecksum(rawData));
 
 			this.data = new Base58(rawData);
 		}
@@ -27,7 +25,7 @@ namespace CoinRT
 		{
 			this.data = new Base58(encoded);
 
-			if(!this.Checksum.SequenceEqual(this.Version.Concat(this.RawKey).Sha256().Sha256().Take(4)))
+			if (!this.Checksum.SequenceEqual(ComputeChecksum(this.Version.Concat(this.RawKey))))
 			{
 				throw new ArgumentException("Checksum is invalid");
 			}
@@ -67,6 +65,11 @@ namespace CoinRT
 		public override int GetHashCode()
 		{
 			return this.data.GetHashCode();
+		}
+
+		private static IEnumerable<byte> ComputeChecksum(IEnumerable<byte> value)
+		{
+			return value.Sha256().Sha256().Take(4);
 		}
 	}
 }
