@@ -10,16 +10,13 @@ namespace CoinRT.UnitTests.Specs
 		string encoded = null;
 		Base58 sut = null;
 
-		void encoded_value()
+		void it_should_be_immutable()
 		{
-			before = () =>
-			{
-				sut = new Base58("aaaa");
-				raw = sut.ToByteArray();
-			};
-			act = () => raw[0]++;
+			sut = new Base58("aaaa");
+			raw = sut.ToByteArray();
+			raw[0]++;
 
-			it["should be immutable"] = () => raw.should_not_be_same(sut.ToByteArray());
+			raw.should_not_be_same(sut.ToByteArray());
 		}
 
 		void string_representation()

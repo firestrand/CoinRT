@@ -1,4 +1,5 @@
-﻿using NSpec;
+﻿using System;
+using NSpec;
 
 namespace CoinRT.UnitTests.Specs
 {
@@ -56,6 +57,12 @@ namespace CoinRT.UnitTests.Specs
 				before = () => key = new EncodedKey("12L5B5yqsf7vwb");
 				it["should become hello"] = () => key.RawKey.should_be(new byte[] { 0x68, 0x65, 0x6c, 0x6c, 0x6f });
 				it["should have version 0"] = () => key.Version.should_be(0);
+			};
+
+			context["mistyped key"] = () =>
+			{
+				it["should throw exception"] = expect<ArgumentException>("Checksum is invalid",
+					() => new EncodedKey("12L5B5ygsf7vwb"));
 			};
 		}
 

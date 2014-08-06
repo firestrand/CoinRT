@@ -36,9 +36,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Address.cs" />
     <Compile Include="Base58.cs" />
+    <Compile Include="Block.cs" />
     <Compile Include="EncodedKey.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Networks\INetwork.cs" />
+    <Compile Include="Networks\Nets.cs" />
+    <Compile Include="Networks\TestNet3.cs" />
+    <Compile Include="Networks\MainNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
