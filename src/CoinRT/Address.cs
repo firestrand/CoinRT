@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CoinRT.Networks;
 
 namespace CoinRT
@@ -12,13 +8,12 @@ namespace CoinRT
 		public Address(byte[] publicKey)
 			: base(Nets.Get<N>().AddressPrefix, publicKey.Sha256().RipeMD160())
 		{
-
 		}
 
 		public Address(string encoded)
-			:base(encoded)
+			: base(encoded)
 		{
-			if (this.Version != Nets.Get<N>().AddressPrefix) 
+			if (this.Version != Nets.Get<N>().AddressPrefix)
 				throw new ArgumentException("Provided address doesn't belong to " + typeof(N).Name);
 		}
 	}
