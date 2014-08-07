@@ -10,7 +10,7 @@ namespace CoinRT
 	/// <typeparam name="N">A network that the address belongs to.</typeparam>
 	public class Address<N> : EncodedKey where N : INetwork
 	{
-		private const string LengthError = "Provided address has wrong size";
+		private const string LengthError = "Provided address has a wrong length";
 		private const string NetworkMismatch = "Provided address doesn't belong to {0}";
 	
 		public Address(IEnumerable<byte> publicKey)

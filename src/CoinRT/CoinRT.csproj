@@ -46,6 +46,7 @@
     <Compile Include="Networks\TestNet3.cs" />
     <Compile Include="Networks\MainNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WifKey.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="crypto">
