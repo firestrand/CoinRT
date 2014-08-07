@@ -9,11 +9,13 @@ namespace CoinRT
 	/// </summary>
 	public class EncodedKey
 	{
+		private const string ChecksumError = "Checksum is invalid";
+
 		private readonly Base58 data;
 
-		public EncodedKey(byte version, byte[] key)
+		public EncodedKey(byte version, IEnumerable<byte> key)
 		{
-			var rawData = new List<byte>(20);
+			var rawData = new List<byte>(25);
 			rawData.Add(version);
 			rawData.AddRange(key);
 			rawData.AddRange(ChecksumOf(rawData));
@@ -25,17 +27,14 @@ namespace CoinRT
 		{
 			this.data = new Base58(encoded);
 
-			if (!this.Checksum.SequenceEqual(ChecksumOf(this.Version.Concat(this.RawKey))))
-			{
-				throw new ArgumentException("Checksum is invalid");
-			}
+			if (!this.Checksum.SequenceEqual(ChecksumOf(this.VersionedKey))) throw new ArgumentException(ChecksumError);
 		}
 
 		public byte Version
 		{
 			get
 			{
-				return this.data.ToByteArray()[0];
+				return this.data[0];
 			}
 		}
 
@@ -43,8 +42,27 @@ namespace CoinRT
 		{
 			get
 			{
-				var data = this.data.ToByteArray();
-				return data.Skip(1).Take(data.Length - 5).ToArray();
+				return this.data.ToByteList()
+					.GetRange(1, this.RawKeyLength)
+					.ToArray();
+			}
+		}
+
+		public int RawKeyLength
+		{
+			get
+			{
+				return this.data.Length - 5;
+			}
+		}
+
+		public byte[] VersionedKey
+		{
+			get
+			{
+				return this.data.ToByteList()
+					.GetRange(0, this.data.Length - 4)
+					.ToArray();
 			}
 		}
 
@@ -52,8 +70,10 @@ namespace CoinRT
 		{
 			get
 			{
-				var data = this.data.ToByteArray();
-				return data.Skip(data.Length - 4).ToArray();
+
+				return this.data.ToByteList()
+					.GetRange(this.data.Length - 4, 4)
+					.ToArray();
 			}
 		}
 

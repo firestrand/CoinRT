@@ -20,8 +20,10 @@ namespace CoinRT
 	public class Base58
 	{
 		private const string CharSet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; // 0OIl removed
+		private const string IllegalChar = "Illegal character {0} at {1}";
+
 		private static readonly BigInteger Base = BigInteger.ValueOf(58);
-		private byte[] bytes;
+		private readonly byte[] bytes;
 		private readonly BigInteger number;
 		private readonly string encoded;
 
@@ -49,7 +51,7 @@ namespace CoinRT
 			for (var i = 0; i < input.Length; i++)
 			{
 				var value = CharSet.IndexOf(input[i]);
-				if (value == -1) throw new ArgumentException("Illegal character " + input[i] + " at " + i);
+				if (value == -1) throw new ArgumentException(IllegalChar.With(input[i], i));
 
 				this.number = this.number.Add(BigInteger.ValueOf(value).Multiply(Base.Pow(input.Length - 1 - i)));
 			}
@@ -61,14 +63,30 @@ namespace CoinRT
 			this.bytes = new byte[leadingZeros].Concat(bytes.Skip(stripSignByte ? 1 : 0)).ToArray();
 		}
 
+		public byte this[int index]
+		{
+			get
+			{
+				return this.bytes[index];
+			}
+		}
+
+		public int Length
+		{
+			get
+			{
+				return this.bytes.Length;
+			}
+		}
+
 		public override string ToString()
 		{
 			return this.encoded;
 		}
 
-		public byte[] ToByteArray()
+		public List<byte> ToByteList()
 		{
-			return this.bytes.ToArray();
+			return this.bytes.ToList();
 		}
 
 		public BigInteger ToBigInteger()

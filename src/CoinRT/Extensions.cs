@@ -31,5 +31,10 @@ namespace CoinRT
 		{
 			return new byte[] { first }.Concat(tail);
 		}
+
+		public static string With(this string template, params object[] args)
+		{
+			return string.Format(template, args);
+		}
 	}
 }

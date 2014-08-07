@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using NSpec;
 
@@ -6,17 +8,17 @@ namespace CoinRT.UnitTests.Specs
 {
 	class describe_Base58 : nspec
 	{
-		byte[] raw = null;
+		List<byte> raw = null;
 		string encoded = null;
 		Base58 sut = null;
 
 		void it_should_be_immutable()
 		{
 			sut = new Base58("aaaa");
-			raw = sut.ToByteArray();
+			raw = sut.ToByteList();
 			raw[0]++;
 
-			raw.should_not_be_same(sut.ToByteArray());
+			raw.should_not_be_same(sut.ToByteList());
 		}
 
 		void string_representation()
@@ -33,19 +35,19 @@ namespace CoinRT.UnitTests.Specs
 
 			context["Hello World"] = () =>
 			{
-				before = () => raw = Encoding.UTF8.GetBytes("Hello World");
+				before = () => raw = Encoding.UTF8.GetBytes("Hello World").ToList();
 				it["should become JxF12TrwUP45BMd"] = () => encoded.should_be("JxF12TrwUP45BMd");
 			};
 
 			context["255"] = () =>
 			{
-				before = () => raw = new byte[] { 255 };
+				before = () => raw = new List<byte> { 255 };
 				it["should become 5Q"] = () => encoded.should_be("5Q");
 			};
 
 			context["0-prefixed number"] = () =>
 			{
-				before = () => raw = new byte[] { 0, 0, 0, 33 };
+				before = () => raw = new List<byte> { 0, 0, 0, 33 };
 				it["should become 1-prefixed string"] = () => encoded.should_be("111a");
 			};
 		}
@@ -53,9 +55,9 @@ namespace CoinRT.UnitTests.Specs
 		void when_decoding()
 		{
 			string encoded = null;
-			byte[] raw = null;
+			List<byte> raw = null;
 
-			act = () => raw = new Base58(encoded).ToByteArray();
+			act = () => raw = new Base58(encoded).ToByteList();
 
 			context["JxF12TrwUP45BMd"] = () =>
 			{
