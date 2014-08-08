@@ -16,38 +16,5 @@ namespace CoinRT.UnitTests.Specs
 			it["should be 20-bytes long"] = expect<ArgumentException>("Provided address has a wrong length",
 				() => new Address<MainNet>("12L5B5yqsf7vwb"));
 		}
-
-		void when_comparing()
-		{
-			context["operator =="] = () =>
-			{
-				it["should return true for the same values"] = () =>
-					(new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa") == new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa")).should_be_true();
-				it["should return false for different values"] = () =>
-					(new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa") == new Address<MainNet>("1HXN72vMwhzgVQnX5JzgnExED8Tg3RCtEr")).should_be_false();
-				it["should return false when comparing with null"] = () =>
-					(new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa") == null).should_be_false();
-			};
-
-			context["operator !="] = () =>
-			{
-				it["should return false for the same values"] = () =>
-					(new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa") != new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa")).should_be_false();
-				it["should return true for different values"] = () =>
-					(new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa") != new Address<MainNet>("1HXN72vMwhzgVQnX5JzgnExED8Tg3RCtEr")).should_be_true();
-				it["should return true when comparing with null"] = () =>
-					(new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa") != null).should_be_true();
-			};
-
-			context["Equals method"] = () =>
-			{
-				it["should return true for the same values"] = () =>
-					(new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa").Equals(new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"))).should_be_true();
-				it["should return false for different values"] = () =>
-					(new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa").Equals(new Address<MainNet>("1HXN72vMwhzgVQnX5JzgnExED8Tg3RCtEr"))).should_be_false();
-				it["should return false when comparing with null"] = () =>
-					(new Address<MainNet>("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa").Equals(null)).should_be_false();
-			};
-		}
 	}
 }

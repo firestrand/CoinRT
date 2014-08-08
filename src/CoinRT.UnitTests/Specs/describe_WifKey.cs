@@ -19,38 +19,5 @@ namespace CoinRT.UnitTests.Specs
 			it["should be 32-bytes long"] = expect<ArgumentException>("Provided key has a wrong length",
 				() => new WifKey<MainNet>("12L5B5yqsf7vwb"));
 		}
-
-		void when_comparing()
-		{
-			context["operator =="] = () =>
-			{
-				it["should return true for the same values"] = () =>
-					(new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss") == new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss")).should_be_true();
-				it["should return false for different values"] = () =>
-					(new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss") == new WifKey<MainNet>("5KMWWy2d3Mjc8LojNoj8Lcz9B1aWu8bRofUgGwQk959Dw5h2iyw")).should_be_false();
-				it["should return false when comparing with null"] = () =>
-					(new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss") == null).should_be_false();
-			};
-
-			context["operator !="] = () =>
-			{
-				it["should return false for the same values"] = () =>
-					(new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss") != new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss")).should_be_false();
-				it["should return true for different values"] = () =>
-					(new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss") != new WifKey<MainNet>("5KMWWy2d3Mjc8LojNoj8Lcz9B1aWu8bRofUgGwQk959Dw5h2iyw")).should_be_true();
-				it["should return true when comparing with null"] = () =>
-					(new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss") != null).should_be_true();
-			};
-
-			context["Equals method"] = () =>
-			{
-				it["should return true for the same values"] = () =>
-					(new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss").Equals(new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss"))).should_be_true();
-				it["should return false for different values"] = () =>
-					(new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss").Equals(new WifKey<MainNet>("5KMWWy2d3Mjc8LojNoj8Lcz9B1aWu8bRofUgGwQk959Dw5h2iyw"))).should_be_false();
-				it["should return false when comparing with null"] = () =>
-					(new WifKey<MainNet>("5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss").Equals(null)).should_be_false();
-			};
-		}
 	}
 }
