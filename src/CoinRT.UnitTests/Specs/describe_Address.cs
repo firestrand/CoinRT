@@ -7,7 +7,7 @@ namespace CoinRT.UnitTests.Specs
 {
 	class describe_Address : nspec
 	{
-		void given_MainNet()
+		void in_MainNet()
 		{
 			it["should start with 1"] = () =>
 				new Address<MainNet>(Enumerable.Repeat<byte>(255, 20)).ToString().should_start_with("1");

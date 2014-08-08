@@ -10,7 +10,7 @@ namespace CoinRT.UnitTests.Specs
 {
 	class describe_WifKey : nspec
 	{
-		void given_MainNet()
+		void in_MainNet()
 		{
 			it["should start with 5"] = () =>
 				new WifKey<MainNet>(Enumerable.Repeat<byte>(255, 32)).ToString().should_start_with("5");
