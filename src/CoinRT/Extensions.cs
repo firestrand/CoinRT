@@ -27,9 +27,9 @@ namespace CoinRT
 			return output;
 		}
 
-		public static IEnumerable<byte> Concat(this byte first, IEnumerable<byte> tail)
+		public static byte[] Before(this byte first, IEnumerable<byte> tail)
 		{
-			return new byte[] { first }.Concat(tail);
+			return new byte[] { first }.Concat(tail).ToArray();
 		}
 
 		public static string With(this string template, params object[] args)

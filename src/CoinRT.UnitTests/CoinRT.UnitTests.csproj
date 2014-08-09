@@ -60,6 +60,7 @@
     <Compile Include="Specs\describe_Address.cs" />
     <Compile Include="Specs\describe_Base58.cs" />
     <Compile Include="Specs\describe_EncodedKey.cs" />
+    <Compile Include="Specs\describe_VarInt.cs" />
     <Compile Include="Specs\describe_WifKey.cs" />
   </ItemGroup>
   <ItemGroup>
