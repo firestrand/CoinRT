@@ -1,126 +1,124 @@
-/*
- * Copyright 2011 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Org.BouncyCastle.Math;
 
 namespace CoinRT
 {
-    /// <summary>
-    ///   A custom form of base58 is used to encode BitCoin addresses. Note that this is not the same base58 as used by Flickr, which you may see reference to around the internet.
-    /// </summary>
-    /// <remarks>
-    ///   Satoshi says: why base-58 instead of standard base-64 encoding? <p /> <ul>
-    ///        <li>Don't want 0OIl characters that look the same in some fonts and
-    ///          could be used to create visually identical looking account numbers.</li>
-    ///        <li>A string with non-alphanumeric characters is not as easily accepted as an account number.</li>
-    ///        <li>E-mail usually won't line-break if there's no punctuation to break at.</li>
-    ///        <li>Double clicking selects the whole number as one word if it's all alphanumeric.</li>
-    ///      </ul>
-    /// </remarks>
-    public static class Base58
-    {
-        private const string Alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-        private static readonly BigInteger Base = BigInteger.ValueOf(58);
+	/// <summary>
+	/// Represents a base58-encoded number.
+	/// </summary>
+	/// <remarks>
+	/// From original Satoshi's code:
+	/// Why base-58 instead of standard base-64 encoding?
+	/// - Don't want 0OIl characters that look the same in some fonts and could be used to create visually identical looking account numbers.
+	/// - A string with non-alphanumeric characters is not as easily accepted as an account number.
+	/// - E-mail usually won't line-break if there's no punctuation to break at.
+	/// - Doubleclicking selects the whole number as one word if it's all alphanumeric.
+	/// </remarks>
+	public class Base58
+	{
+		private const string CharSet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; // 0OIl removed
+		private const string IllegalChar = "Illegal character {0} at {1}";
 
-        public static string Encode(byte[] input)
-        {
-            // TODO: This could be a lot more efficient.
-            var bi = new BigInteger(1, input);
-            var s = new StringBuilder();
-            while (bi.CompareTo(Base) >= 0)
-            {
-                var mod = bi.Mod(Base);
-                s.Insert(0, new[] { Alphabet[mod.IntValue] });
-                bi = bi.Subtract(mod).Divide(Base);
-            }
-            s.Insert(0, new[] { Alphabet[bi.IntValue] });
-            // Convert leading zeros too.
-            foreach (var anInput in input)
-            {
-                if (anInput != 0)
-                {
-                    break;
-                }
-                
-                s.Insert(0, new[] {Alphabet[0]});
-            }
+		private static readonly BigInteger Base = BigInteger.ValueOf(58);
+		private readonly byte[] bytes;
+		private readonly BigInteger number;
+		private readonly string encoded;
 
-            return s.ToString();
-        }
+		public Base58(IEnumerable<byte> input)
+		{
+			this.bytes = input.ToArray();
+			this.number = new BigInteger(1, this.bytes);
 
-        /// <exception cref="AddressFormatException" />
-        public static byte[] Decode(string input)
-        {
-            var bytes = DecodeToBigInteger(input).ToByteArray();
-            // We may have got one more byte than we wanted, if the high bit of the next-to-last byte was not zero. This
-            // is because BigIntegers are represented with twos-compliment notation, thus if the high bit of the last
-            // byte happens to be 1 another 8 zero bits will be added to ensure the number parses as positive. Detect
-            // that case here and chop it off.
-            var stripSignByte = bytes.Length > 1 && bytes[0] == 0 && bytes[1] >= 0x80;
-            // Count the leading zeros, if any.
-            var leadingZeros = 0;
-            for (var i = 0; input[i] == Alphabet[0]; i++)
-            {
-                leadingZeros++;
-            }
-            // Now cut/pad correctly. Java 6 has a convenience for this, but Android can't use it.
-            var tmp = new byte[bytes.Length - (stripSignByte ? 1 : 0) + leadingZeros];
-            Array.Copy(bytes, stripSignByte ? 1 : 0, tmp, leadingZeros, tmp.Length - leadingZeros);
-            return tmp;
-        }
+			var sb = new StringBuilder();
+			while (number.CompareTo(BigInteger.Zero) > 0)
+			{
+				var div = number.DivideAndRemainder(Base);
+				sb.Insert(0, CharSet[div[1].IntValue]);
+				number = div[0];
+			}
 
-        /// <exception cref="AddressFormatException" />
-        public static BigInteger DecodeToBigInteger(string input)
-        {
-            var bi = BigInteger.ValueOf(0);
-            // Work backwards through the string.
-            for (var i = input.Length - 1; i >= 0; i--)
-            {
-                var alphaIndex = Alphabet.IndexOf(input[i]);
-                if (alphaIndex == -1)
-                {
-                    throw new AddressFormatException("Illegal character " + input[i] + " at " + i);
-                }
-                bi = bi.Add(BigInteger.ValueOf(alphaIndex).Multiply(Base.Pow(input.Length - 1 - i)));
-            }
-            return bi;
-        }
+			string unpadded = sb.ToString();
+			this.encoded = unpadded.PadLeft(unpadded.Length + input.TakeWhile(i => i == 0).Count(), CharSet[0]);
+		}
 
-        /// <summary>
-        ///   Uses the checksum in the last 4 bytes of the decoded data to verify the rest are correct. The checksum is removed from the returned data.
-        /// </summary>
-        /// <exception cref="AddressFormatException">If the input is not base 58 or the checksum does not validate.</exception>
-        public static byte[] DecodeChecked(string input)
-        {
-            var tmp = Decode(input);
-            if (tmp.Length < 4)
-                throw new AddressFormatException("Input too short");
-            var checksum = new byte[4];
-            Array.Copy(tmp, tmp.Length - 4, checksum, 0, 4);
-            var bytes = new byte[tmp.Length - 4];
-            Array.Copy(tmp, 0, bytes, 0, tmp.Length - 4);
-            tmp = Utils.DoubleDigest(bytes);
-            var hash = new byte[4];
-            Array.Copy(tmp, 0, hash, 0, 4);
-            if (!hash.SequenceEqual(checksum))
-                throw new AddressFormatException("Checksum does not validate");
-            return bytes;
-        }
-    }
+		public Base58(string input)
+		{
+			this.encoded = input;
+			this.number = BigInteger.Zero;
+			for (var i = 0; i < input.Length; i++)
+			{
+				var value = CharSet.IndexOf(input[i]);
+				if (value == -1) throw new ArgumentException(IllegalChar.With(input[i], i));
+
+				this.number = this.number.Add(BigInteger.ValueOf(value).Multiply(Base.Pow(input.Length - 1 - i)));
+			}
+
+			this.bytes = this.number.ToByteArray();
+			bool stripSignByte = this.bytes.Length > 1 && this.bytes[0] == 0 && this.bytes[1] >= 0x80;
+			int leadingZeros = input.ToCharArray().TakeWhile(ch => ch == CharSet[0]).Count();
+
+			this.bytes = new byte[leadingZeros].Concat(bytes.Skip(stripSignByte ? 1 : 0)).ToArray();
+		}
+
+		public byte this[int index]
+		{
+			get
+			{
+				return this.bytes[index];
+			}
+		}
+
+		public int Length
+		{
+			get
+			{
+				return this.bytes.Length;
+			}
+		}
+
+		public override string ToString()
+		{
+			return this.encoded;
+		}
+
+		public List<byte> ToByteList()
+		{
+			return this.bytes.ToList();
+		}
+
+		public BigInteger ToBigInteger()
+		{
+			return this.number;
+		}
+
+		public override int GetHashCode()
+		{
+			return this.encoded.GetHashCode();
+		}
+
+		public bool Equals(Base58 other)
+		{
+			if (object.ReferenceEquals(other, null)) return false;
+
+			return this.encoded == other.encoded;
+		}
+
+		public override bool Equals(object obj)
+		{
+			return Equals(obj as Base58);
+		}
+
+		public static bool operator ==(Base58 left, Base58 right)
+		{
+			return object.ReferenceEquals(left, right) || !object.ReferenceEquals(left, null) && left.Equals(right);
+		}
+
+		public static bool operator !=(Base58 left, Base58 right)
+		{
+			return !(left == right);
+		}
+	}
 }

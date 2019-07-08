@@ -1,103 +1,73 @@
-/*
- * Copyright 2011 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CoinRT
 {
-    public class VarInt
-    {
-        public ulong Value { get; private set; }
+	/// <summary>
+	/// A variable length integer.
+	/// </summary>
+	public struct VarInt
+	{
+		private const byte UInt16Prefix = 253;
+		private const byte UInt32Prefix = 254;
+		private const byte UInt64Prefix = 255;
 
-        public VarInt(ulong value)
-        {
-            Value = value;
-        }
+		private readonly ulong value;
 
-        // BitCoin has its own varint format, known in the C++ source as "compact size".
-        public VarInt(byte[] buf, int offset)
-        {
-            var first = buf[offset];
-            ulong val;
-            if (first < 253)
-            {
-                // 8 bits.
-                val = first;
-            }
-            else if (first == 253)
-            {
-                // 16 bits.
-                val = (ushort) (buf[offset + 1] | (buf[offset + 2] << 8));
-            }
-            else if (first == 254)
-            {
-                // 32 bits.
-                val = Utils.ReadUint32(buf, offset + 1);
-            }
-            else
-            {
-                // 64 bits.
-                val = Utils.ReadUint32(buf, offset + 1) | (((ulong) Utils.ReadUint32(buf, offset + 5)) << 32);
-            }
-            Value = val;
-        }
+		public VarInt(ulong value)
+		{
+			this.value = value;
+		}
 
-        public int SizeInBytes
-        {
-            get
-            {
-                // Java doesn't have the actual value of MAX_INT, as all types in Java are signed.
-                if (Value < 253)
-                    return 1;
-                if (Value <= ushort.MaxValue)
-                    return 3; // 1 marker + 2 data bytes
-                if (Value <= uint.MaxValue)
-                    return 5; // 1 marker + 4 data bytes
-                return 9; // 1 marker + 8 data bytes
-            }
-        }
+		public VarInt(IEnumerable<byte> bytes)
+		{
+			this.value = Parse(bytes);
+		}
 
-        public byte[] Encode()
-        {
-            return EncodeBe();
-        }
+		public int Size
+		{
+			get
+			{
+				if (this.value < 253) return 1;
+				if (this.value <= ushort.MaxValue) return 3;
+				if (this.value <= uint.MaxValue) return 5;
+				return 9;
+			}
+		}
 
-        public byte[] EncodeBe()
-        {
-            if (Value < 253)
-            {
-                return new[] {(byte) Value};
-            }
-            if (Value <= ushort.MaxValue)
-            {
-                return new[] {(byte) 253, (byte) Value, (byte) (Value >> 8)};
-            }
-            if (Value <= uint.MaxValue)
-            {
-                var bytes = new byte[5];
-                bytes[0] = 254;
-                Utils.Uint32ToByteArrayLe((uint) Value, bytes, 1);
-                return bytes;
-            }
-            else
-            {
-                var bytes = new byte[9];
-                bytes[0] = 255;
-                Utils.Uint32ToByteArrayLe((uint) Value, bytes, 1);
-                Utils.Uint32ToByteArrayLe((uint) (Value >> 32), bytes, 5);
-                return bytes;
-            }
-        }
-    }
+		public override string ToString()
+		{
+			return this.value.ToString();
+		}
+
+		public static ulong Parse(IEnumerable<byte> bytes)
+		{
+			var first = bytes.First();
+			var tail = bytes.Skip(1);
+			switch (first)
+			{
+				case UInt64Prefix: return BitConverter.ToUInt64(tail.Take(8).ToArray(), 0);
+				case UInt32Prefix: return BitConverter.ToUInt32(tail.Take(4).ToArray(), 0);
+				case UInt16Prefix: return BitConverter.ToUInt16(tail.Take(2).ToArray(), 0);
+				default: return first;
+			}
+		}
+
+		public static implicit operator ulong(VarInt num)
+		{
+			return num.value;
+		}
+
+		public static explicit operator byte[](VarInt num)
+		{
+			switch (num.Size)
+			{
+				case 1: return new[] { (byte)num.value };
+				case 3: return UInt16Prefix.Before(BitConverter.GetBytes((ushort)num.value));
+				case 5: return UInt32Prefix.Before(BitConverter.GetBytes((uint)num.value));
+				default: return UInt64Prefix.Before(BitConverter.GetBytes(num.value));
+			}
+		}
+	}
 }
